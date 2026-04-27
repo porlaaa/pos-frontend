@@ -34,7 +34,7 @@ const useLoadData = () => {
 
         // 3. แก้จาก Navigate เป็น navigate (n ตัวเล็ก)
         if (window.location.pathname !== "/auth") {
-          Navigate("/auth");
+          navigate("/auth");
         }
       } finally {
         setIsLoading(false);
