@@ -6,7 +6,7 @@ const defaultHeader = {
 };
 
 export const axiosWrapper = axios.create({
-  baseURL: "https://finalprojectpos.online",
+  baseURL: "https://finalprojectpos.online/api",
   withCredentials: true,
-  headers: { ...defaultHeader },
+  // headers: { ...defaultHeader },
 });
