@@ -11,7 +11,6 @@ const useLoadData = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      // 1. เช็คก่อนว่ามี Token ไหม ถ้าไม่มีไม่ต้องยิง API ให้เสียเที่ยว
       const token = localStorage.getItem("accessToken");
       if (!token) {
         dispatch(removeUser());
@@ -21,9 +20,6 @@ const useLoadData = () => {
 
       try {
         const { data } = await getUserData();
-        console.log("User data:", data);
-
-        // 2. เช็คโครงสร้างข้อมูล (บาง Backend ส่ง data ตรงๆ บางอันส่ง data.data)
         const userData = data.data || data;
         const { _id, name, email, phone, role } = userData;
 
@@ -31,10 +27,10 @@ const useLoadData = () => {
       } catch (error) {
         console.log("Error loading data:", error);
         dispatch(removeUser());
-
-        // 3. แก้จาก Navigate เป็น navigate (n ตัวเล็ก)
+        
+        // แก้เป็นตัวเล็ก navigate ตามที่ประกาศไว้ข้างบน
         if (window.location.pathname !== "/auth") {
-          navigate("/auth");
+          navigate("/auth"); 
         }
       } finally {
         setIsLoading(false);

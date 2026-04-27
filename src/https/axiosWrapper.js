@@ -10,11 +10,17 @@ export const axiosWrapper = axios.create({
   headers: { ...defaultHeader },
 });
 
-// ✅ เพิ่มส่วนนี้
 axiosWrapper.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
+  
+  // เช็คใน Console ว่าบรรทัดนี้ขึ้นไหม
+  console.log("Checking token in Interceptor:", token); 
+
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log("Authorization Header attached!"); 
   }
   return config;
+}, (error) => {
+  return Promise.reject(error);
 });
