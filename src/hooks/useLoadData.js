@@ -1,3 +1,9 @@
+import { useDispatch } from "react-redux";
+import { getUserData } from "../https";
+import { useEffect, useState } from "react";
+import { removeUser, setUser } from "../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
+
 const useLoadData = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -5,7 +11,7 @@ const useLoadData = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      // ✅ เช็ค token ก่อน ถ้าไม่มีก็ไม่ต้อง fetch
+      // ✅ เช็ค token ก่อน
       const token = localStorage.getItem("accessToken");
       if (!token) {
         dispatch(removeUser());
@@ -15,11 +21,12 @@ const useLoadData = () => {
 
       try {
         const { data } = await getUserData();
+        console.log(data);
         const { _id, name, email, phone, role } = data.data;
         dispatch(setUser({ _id, name, email, phone, role }));
       } catch (error) {
         dispatch(removeUser());
-        Navigate("/auth"); // ✅ แก้จาก Navigate เป็น navigate ด้วย
+        navigate("/auth"); // ✅ แก้จาก Navigate เป็น navigate
         console.log(error);
       } finally {
         setIsLoading(false);
@@ -31,3 +38,5 @@ const useLoadData = () => {
 
   return isLoading;
 };
+
+export default useLoadData;
