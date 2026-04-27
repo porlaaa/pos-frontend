@@ -19,7 +19,7 @@ const useLoadData = () => {
         dispatch(setUser({ _id, name, email, phone, role }));
       } catch (error) {
         dispatch(removeUser());
-        navigate("/auth"); // ✅ แก้จาก Navigate เป็น navigate ด้วย
+        Navigate("/auth"); // ✅ แก้จาก Navigate เป็น navigate ด้วย
         console.log(error);
       } finally {
         setIsLoading(false);
