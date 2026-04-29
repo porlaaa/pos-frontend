@@ -14,18 +14,18 @@ const BottomNav = () => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   const increment = () => {
-    if(guestCount >= 6) return;
+    if (guestCount >= 6) return;
     setGuestCount((prev) => prev + 1);
   }
   const decrement = () => {
-    if(guestCount <= 0) return;
+    if (guestCount <= 0) return;
     setGuestCount((prev) => prev - 1);
   }
 
@@ -33,7 +33,8 @@ const BottomNav = () => {
 
   const handleCreateOrder = () => {
     // send the data to store
-    dispatch(setCustomer({name, phone, guests: guestCount}));
+    dispatch(setCustomer({ name, phone, guests: guestCount }));
+    setIsModalOpen(false);
     navigate("/tables");
   }
 
@@ -41,25 +42,22 @@ const BottomNav = () => {
     <div className="fixed bottom-0 left-0 right-0 bg-[#262626] p-2 h-16 flex justify-around">
       <button
         onClick={() => navigate("/")}
-        className={`flex items-center justify-center font-bold ${
-          isActive("/") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
-        } w-[300px] rounded-[20px]`}
+        className={`flex items-center justify-center font-bold ${isActive("/") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          } w-[300px] rounded-[20px]`}
       >
         <FaHome className="inline mr-2" size={20} /> <p>Home</p>
       </button>
       <button
         onClick={() => navigate("/orders")}
-        className={`flex items-center justify-center font-bold ${
-          isActive("/orders") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
-        } w-[300px] rounded-[20px]`}
+        className={`flex items-center justify-center font-bold ${isActive("/orders") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          } w-[300px] rounded-[20px]`}
       >
         <MdOutlineReorder className="inline mr-2" size={20} /> <p>Orders</p>
       </button>
       <button
         onClick={() => navigate("/tables")}
-        className={`flex items-center justify-center font-bold ${
-          isActive("/tables") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
-        } w-[300px] rounded-[20px]`}
+        className={`flex items-center justify-center font-bold ${isActive("/tables") ? "text-[#f5f5f5] bg-[#343434]" : "text-[#ababab]"
+          } w-[300px] rounded-[20px]`}
       >
         <MdTableBar className="inline mr-2" size={20} /> <p>Tables</p>
       </button>
@@ -68,7 +66,7 @@ const BottomNav = () => {
       </button>
 
       <button
-        disabled={isActive("/tables") || isActive("/menu")}
+        disabled={isActive("/menu")}
         onClick={openModal}
         className="absolute bottom-6 bg-[#F6B100] text-[#f5f5f5] rounded-full p-4 items-center"
       >
@@ -79,13 +77,13 @@ const BottomNav = () => {
         <div>
           <label className="block text-[#ababab] mb-2 text-sm font-medium">Customer Name</label>
           <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="" placeholder="Enter customer name" id="" className="bg-transparent flex-1 text-white focus:outline-none"  />
+            <input value={name} onChange={(e) => setName(e.target.value)} type="text" name="" placeholder="Enter customer name" id="" className="bg-transparent flex-1 text-white focus:outline-none" />
           </div>
         </div>
         <div>
           <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">Customer Phone</label>
           <div className="flex items-center rounded-lg p-3 px-4 bg-[#1f1f1f]">
-            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" name="" placeholder="+91-9999999999" id="" className="bg-transparent flex-1 text-white focus:outline-none"  />
+            <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" name="" placeholder="+91-9999999999" id="" className="bg-transparent flex-1 text-white focus:outline-none" />
           </div>
         </div>
         <div>

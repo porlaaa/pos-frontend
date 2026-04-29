@@ -1,4 +1,4 @@
-export const getBgColor = () => {
+export const getBgColor = (name) => {
   const bgarr = [
     "#b73e3e",
     "#5b45b0",
@@ -11,13 +11,17 @@ export const getBgColor = () => {
     "#be3e3f",
     "#02ca3a",
   ];
-  const randomBg = Math.floor(Math.random() * bgarr.length);
-  const color = bgarr[randomBg];
-  return color;
+  if (!name) return bgarr[0];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % bgarr.length;
+  return bgarr[index];
 };
 
 export const getAvatarName = (name) => {
-  if(!name) return "";
+  if (!name) return "";
 
   return name.split(" ").map(word => word[0]).join("").toUpperCase();
 

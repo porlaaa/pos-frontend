@@ -20,7 +20,7 @@ const RecentOrders = () => {
 
   return (
     <div className="px-8 mt-6">
-      <div className="bg-[#1a1a1a] w-full h-[450px] rounded-lg">
+      <div className="bg-[#1a1a1a] w-full h-[400px] lg:h-[450px] rounded-lg flex flex-col">
         <div className="flex justify-between items-center px-6 py-4">
           <h1 className="text-[#f5f5f5] text-lg font-semibold tracking-wide">
             Recent Orders
@@ -40,7 +40,7 @@ const RecentOrders = () => {
         </div>
 
         {/* Order list */}
-        <div className="mt-4 px-6 overflow-y-scroll h-[300px] scrollbar-hide">
+        <div className="mt-4 px-6 overflow-y-scroll flex-1 pb-4 scrollbar-hide">
           {resData?.data.data.length > 0 ? (
             resData.data.data.map((order) => {
               return <OrderList key={order._id} order={order} />;

@@ -11,7 +11,7 @@ const OrderCard = ({ order }) => {
   const total = order.bills?.totalWithTax || 0;
 
   return (
-    <div className="w-[500px] bg-[#262626] p-4 rounded-lg mb-4">
+    <div className="w-full bg-[#262626] p-4 rounded-lg mb-4">
       <div className="flex items-center gap-5">
 
         {/* Avatar */}

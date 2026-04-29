@@ -22,10 +22,15 @@ const PopularDishes = () => {
 
   orders.forEach(order => {
     order.items?.forEach(i => {
-      if (!itemCountMap[i.itemId]) {
-        itemCountMap[i.itemId] = 0;
+      // Fallback to name matching for older orders that don't have itemId
+      const targetId = i.itemId || items.find(dish => dish.name === i.name)?._id;
+
+      if (targetId) {
+        if (!itemCountMap[targetId]) {
+          itemCountMap[targetId] = 0;
+        }
+        itemCountMap[targetId] += i.quantity;
       }
-      itemCountMap[i.itemId] += i.quantity;
     });
   });
 
@@ -39,8 +44,8 @@ const PopularDishes = () => {
     .slice(0, 7);
 
   return (
-    <div className="mt-6 pr-6">
-      <div className="bg-[#1a1a1a] w-full rounded-lg">
+    <div className="mt-6 px-6 lg:px-0 lg:pr-6">
+      <div className="bg-[#1a1a1a] w-full rounded-lg h-[400px] lg:h-[680px] flex flex-col">
 
         <div className="flex justify-between items-center px-6 py-4">
           <h1 className="text-[#f5f5f5] text-lg font-semibold">
@@ -48,7 +53,7 @@ const PopularDishes = () => {
           </h1>
         </div>
 
-        <div className="overflow-y-scroll h-[680px] scrollbar-hide">
+        <div className="overflow-y-scroll flex-1 pb-4 scrollbar-hide">
 
           {popular.map((dish, index) => (
             <div

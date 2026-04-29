@@ -17,9 +17,9 @@ const Menu = () => {
   const customerData = useSelector((state) => state.customer);
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-hidden flex gap-3">
+    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden flex flex-col lg:flex-row gap-3 pb-24 lg:pb-0">
       {/* Left Div */}
-      <div className="flex-[3]">
+      <div className="flex-[3] flex flex-col">
         <div className="flex items-center justify-between px-10 py-4">
           <div className="flex items-center gap-4">
             <BackButton />
@@ -45,7 +45,7 @@ const Menu = () => {
         <MenuContainer />
       </div>
       {/* Right Div */}
-      <div className="flex-[1] bg-[#1a1a1a] mt-4 mr-3 h-[780px] rounded-lg pt-2">
+      <div className="flex-[1] bg-[#1a1a1a] lg:mt-4 mx-4 lg:mx-0 lg:mr-3 h-auto lg:h-[780px] rounded-lg pt-2 mb-4 lg:mb-0">
         {/* Customer Info */}
         <CustomerInfo />
         <hr className="border-[#2a2a2a] border-t-2" />

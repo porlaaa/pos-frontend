@@ -38,13 +38,13 @@ const Home = () => {
   }
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-hidden flex gap-3">
+    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden flex flex-col lg:flex-row gap-3 pb-24 lg:pb-0">
       
       {/* Left */}
       <div className="flex-[3]">
         <Greetings />
 
-        <div className="flex items-center w-full gap-3 px-8 mt-8">
+        <div className="flex flex-col sm:flex-row items-center w-full gap-3 px-8 mt-8">
           
           <MiniCard
             title="Total Earnings"
