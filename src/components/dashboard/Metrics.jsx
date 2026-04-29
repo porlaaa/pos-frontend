@@ -1,107 +1,133 @@
 import React from "react";
-import { itemsData, metricsData } from "../../constants";
+import { useQuery } from "@tanstack/react-query";
+import { getOrders, getMenus, getItems } from "../../https";
+import ItemCard from "./ItemCard";
 
 const Metrics = () => {
+
+  // ===== ORDERS =====
+  const { data: orderRes, isLoading: orderLoading } = useQuery({
+    queryKey: ["orders"],
+    queryFn: getOrders,
+  });
+
+  // ===== MENUS =====
+  const { data: menuRes, isLoading: menuLoading } = useQuery({
+    queryKey: ["menus"],
+    queryFn: getMenus,
+  });
+
+  // ===== ITEMS =====
+  const { data: itemRes, isLoading: itemLoading } = useQuery({
+    queryKey: ["items"],
+    queryFn: getItems,
+  });
+
+  const orders = orderRes?.data?.data || [];
+  const menus = menuRes?.data?.data || [];
+  const items = itemRes?.data?.data || [];
+
+  // ===== LOADING =====
+  if (orderLoading || menuLoading || itemLoading) {
+    return <p className="text-white p-5">Loading...</p>;
+  }
+
+  // ===== 💰 TOTAL EARNINGS =====
+  const totalEarnings = orders.reduce(
+    (sum, order) => sum + (order?.bills?.totalWithTax || 0),
+    0
+  );
+
+  // ===== 🔄 IN PROGRESS =====
+  const inProgressCount = orders.filter(
+    (o) => o.orderStatus === "In Progress"
+  ).length;
+
+  // ===== 📊 METRICS =====
+  const totalCategories = menus.length;
+  const totalDishes = items.length;
+
   return (
-    <div className="container mx-auto py-2 px-6 md:px-4">
-      <div className="flex justify-between items-center">
-        <div>
-          <h2 className="font-semibold text-[#f5f5f5] text-xl">
-            Overall Performance
-          </h2>
-          <p className="text-sm text-[#ababab]">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Distinctio, obcaecati?
+    <div className="container mx-auto py-2 px-6">
+
+      {/* HEADER */}
+      <h2 className="text-white text-xl font-semibold">
+        Overall Performance
+      </h2>
+
+      {/* METRICS */}
+      <div className="mt-6 grid grid-cols-4 gap-4">
+
+        <div className="bg-green-600 p-4 rounded">
+          <p className="text-white text-sm">Total Earnings</p>
+          <p className="text-white text-2xl font-bold">
+            ₹{totalEarnings.toLocaleString()}
           </p>
         </div>
-        <button className="flex items-center gap-1 px-4 py-2 rounded-md text-[#f5f5f5] bg-[#1a1a1a]">
-          Last 1 Month
-          <svg
-            className="w-3 h-3"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth="4"
-          >
-            <path d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
+
+        <div className="bg-yellow-500 p-4 rounded">
+          <p className="text-white text-sm">In Progress</p>
+          <p className="text-white text-2xl font-bold">
+            {inProgressCount}
+          </p>
+        </div>
+
+        <div className="bg-blue-500 p-4 rounded">
+          <p className="text-white text-sm">Categories</p>
+          <p className="text-white text-2xl font-bold">
+            {totalCategories}
+          </p>
+        </div>
+
+        <div className="bg-purple-500 p-4 rounded">
+          <p className="text-white text-sm">Dishes</p>
+          <p className="text-white text-2xl font-bold">
+            {totalDishes}
+          </p>
+        </div>
+
       </div>
 
-      <div className="mt-6 grid grid-cols-4 gap-4">
-        {metricsData.map((metric, index) => {
+      {/* MENU + ITEMS */}
+      <div className="mt-12">
+        <h2 className="text-white text-xl mb-4">
+          Menu Items (Manage)
+        </h2>
+
+        {menus.map((menu) => {
+
+          // ✅ FIX: convert to string กันพลาด ObjectId
+          const categoryItems = items.filter(
+            (item) => String(item.category) === String(menu._id)
+          );
+
           return (
-            <div
-              key={index}
-              className="shadow-sm rounded-lg p-4"
-              style={{ backgroundColor: metric.color }}
-            >
-              <div className="flex justify-between items-center">
-                <p className="font-medium text-xs text-[#f5f5f5]">
-                  {metric.title}
-                </p>
-                <div className="flex items-center gap-1">
-                  <svg
-                    className="w-3 h-3"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                    style={{ color: metric.isIncrease ? "#f5f5f5" : "red" }}
-                  >
-                    <path
-                      d={metric.isIncrease ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"}
-                    />
-                  </svg>
-                  <p
-                    className="font-medium text-xs"
-                    style={{ color: metric.isIncrease ? "#f5f5f5" : "red" }}
-                  >
-                    {metric.percentage}
-                  </p>
-                </div>
+            <div key={menu._id} className="mb-8">
+
+              <h3 className="text-yellow-400 text-lg mb-3">
+                {menu.name}
+              </h3>
+
+              <div className="grid grid-cols-4 gap-4">
+
+                {categoryItems.length === 0 && (
+                  <p className="text-gray-400">No items</p>
+                )}
+
+                {categoryItems.map((item) => (
+                  <ItemCard
+                    key={item._id}
+                    item={item}
+                    menuId={menu._id}
+                  />
+                ))}
+
               </div>
-              <p className="mt-1 font-semibold text-2xl text-[#f5f5f5]">
-                {metric.value}
-              </p>
             </div>
           );
         })}
       </div>
 
-      <div className="flex flex-col justify-between mt-12">
-        <div>
-          <h2 className="font-semibold text-[#f5f5f5] text-xl">
-            Item Details
-          </h2>
-          <p className="text-sm text-[#ababab]">
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-            Distinctio, obcaecati?
-          </p>
-        </div>
-
-        <div className="mt-6 grid grid-cols-4 gap-4">
-
-            {
-                itemsData.map((item, index) => {
-                    return (
-                        <div key={index} className="shadow-sm rounded-lg p-4" style={{ backgroundColor: item.color }}>
-                        <div className="flex justify-between items-center">
-                          <p className="font-medium text-xs text-[#f5f5f5]">{item.title}</p>
-                          <div className="flex items-center gap-1">
-                            <svg className="w-3 h-3 text-white" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="4" fill="none">
-                              <path d="M5 15l7-7 7 7" />
-                            </svg>
-                            <p className="font-medium text-xs text-[#f5f5f5]">{item.percentage}</p>
-                          </div>
-                        </div>
-                        <p className="mt-1 font-semibold text-2xl text-[#f5f5f5]">{item.value}</p>
-                      </div>
-                    )
-                })
-            }
-
-        </div>
-      </div>
     </div>
   );
 };

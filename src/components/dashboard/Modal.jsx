@@ -1,106 +1,244 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { IoMdClose } from "react-icons/io";
-import { useMutation } from "@tanstack/react-query";
-import { addTable } from "../../https";
-import { enqueueSnackbar } from "notistack"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  addTable,
+  createMenu,
+  createItem, // ✅ ใช้ตัวใหม่
+  getMenus,
+} from "../../https";
+import { enqueueSnackbar } from "notistack";
 
-const Modal = ({ setIsTableModalOpen }) => {
+const Modal = ({ type, setModalType }) => {
+  const queryClient = useQueryClient();
+
+  // ===== TABLE =====
   const [tableData, setTableData] = useState({
     tableNo: "",
     seats: "",
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setTableData((prev) => ({ ...prev, [name]: value }));
-  };
+  // ===== CATEGORY =====
+  const [categoryData, setCategoryData] = useState({
+    name: "",
+    icon: "",
+    bgColor: "",
+  });
+
+  // ===== DISH =====
+  const [dishData, setDishData] = useState({
+    menuId: "",
+    name: "",
+    price: "",
+  });
+
+  // 🔥 โหลด categories
+  const { data } = useQuery({
+    queryKey: ["menus"],
+    queryFn: getMenus,
+  });
+
+  const menus = data?.data?.data || [];
+
+  // ================== MUTATIONS ==================
+
+  // TABLE
+  const tableMutation = useMutation({
+    mutationFn: addTable,
+    onSuccess: (res) => {
+      enqueueSnackbar(res.data.message, { variant: "success" });
+      setModalType(null);
+      queryClient.invalidateQueries(["tables"]);
+    },
+  });
+
+  // CATEGORY
+  const categoryMutation = useMutation({
+    mutationFn: createMenu,
+    onSuccess: () => {
+      enqueueSnackbar("Category created!", { variant: "success" });
+      setModalType(null);
+      queryClient.invalidateQueries(["menus"]);
+    },
+  });
+
+  // DISH (🔥 FIX ใหม่)
+  const dishMutation = useMutation({
+    mutationFn: createItem,
+
+    onSuccess: () => {
+      enqueueSnackbar("Dish added!", { variant: "success" });
+      setModalType(null);
+
+      // 🔥 สำคัญ: refresh items
+      queryClient.invalidateQueries(["items"]);
+    },
+
+    onError: () => {
+      enqueueSnackbar("Add dish failed", { variant: "error" });
+    },
+  });
+
+  // ================== HANDLERS ==================
+
+  const handleCloseModal = () => setModalType(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(tableData);
-    tableMutation.mutate(tableData);
-  };
 
-  const handleCloseModal = () => {
-    setIsTableModalOpen(false);
-  };
-
-  const tableMutation = useMutation({
-    mutationFn: (reqData) => addTable(reqData),
-    onSuccess: (res) => {
-        setIsTableModalOpen(false);
-        const { data } = res;
-        enqueueSnackbar(data.message, { variant: "success" })
-    },
-    onError: (error) => {
-        const { data } = error.response;
-        enqueueSnackbar(data.message, { variant: "error" })
-        console.log(error);
+    // TABLE
+    if (type === "table") {
+      tableMutation.mutate(tableData);
     }
-  })
 
+    // CATEGORY
+    if (type === "category") {
+      categoryMutation.mutate(categoryData);
+    }
 
+    // DISH (🔥 FIX ใหม่)
+    if (type === "dishes") {
+      if (!dishData.menuId) {
+        return enqueueSnackbar("Select category first", {
+          variant: "warning",
+        });
+      }
+
+      dishMutation.mutate({
+        name: dishData.name,
+        price: Number(dishData.price),
+        category: dishData.menuId, // 🔥 สำคัญ
+      });
+    }
+  };
+
+  // ================== TITLE ==================
+  const title =
+    type === "table"
+      ? "Add Table"
+      : type === "category"
+      ? "Add Category"
+      : "Add Dish";
+
+  // ================== UI ==================
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="bg-[#262626] p-6 rounded-lg shadow-lg w-96"
+        className="bg-[#262626] p-6 rounded-lg w-96"
       >
-        {/* Modal Header */}
-
-        <div className="flex justify-between item-center mb-4">
-          <h2 className="text-[#f5f5f5] text-xl font-semibold">Add Table</h2>
-          <button
-            onClick={handleCloseModal}
-            className="text-[#f5f5f5] hover:text-red-500"
-          >
-            <IoMdClose size={24} />
+        {/* HEADER */}
+        <div className="flex justify-between mb-4">
+          <h2 className="text-white text-xl font-semibold">{title}</h2>
+          <button onClick={handleCloseModal}>
+            <IoMdClose size={24} className="text-white" />
           </button>
         </div>
 
-        {/* Modal Body */}
+        {/* FORM */}
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        <form onSubmit={handleSubmit} className="space-y-4 mt-10">
-          <div>
-            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
-              Table Number
-            </label>
-            <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+          {/* ===== TABLE ===== */}
+          {type === "table" && (
+            <>
               <input
                 type="number"
-                name="tableNo"
+                placeholder="Table No"
                 value={tableData.tableNo}
-                onChange={handleInputChange}
-                className="bg-transparent flex-1 text-white focus:outline-none"
-                required
+                onChange={(e) =>
+                  setTableData({ ...tableData, tableNo: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
               />
-            </div>
-          </div>
-          <div>
-            <label className="block text-[#ababab] mb-2 mt-3 text-sm font-medium">
-              Number of Seats
-            </label>
-            <div className="flex item-center rounded-lg p-5 px-4 bg-[#1f1f1f]">
+
               <input
                 type="number"
-                name="seats"
+                placeholder="Seats"
                 value={tableData.seats}
-                onChange={handleInputChange}
-                className="bg-transparent flex-1 text-white focus:outline-none"
-                required
+                onChange={(e) =>
+                  setTableData({ ...tableData, seats: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
               />
-            </div>
-          </div>
+            </>
+          )}
 
-          <button
-            type="submit"
-            className="w-full rounded-lg mt-10 mb-6 py-3 text-lg bg-yellow-400 text-gray-900 font-bold"
-          >
-            Add Table
+          {/* ===== CATEGORY ===== */}
+          {type === "category" && (
+            <>
+              <input
+                placeholder="Category Name"
+                value={categoryData.name}
+                onChange={(e) =>
+                  setCategoryData({ ...categoryData, name: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+
+              <input
+                placeholder="Icon 🍕"
+                value={categoryData.icon}
+                onChange={(e) =>
+                  setCategoryData({ ...categoryData, icon: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+
+              <input
+                placeholder="Color (#xxxxxx)"
+                value={categoryData.bgColor}
+                onChange={(e) =>
+                  setCategoryData({ ...categoryData, bgColor: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+            </>
+          )}
+
+          {/* ===== DISH ===== */}
+          {type === "dishes" && (
+            <>
+              <select
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+                value={dishData.menuId}
+                onChange={(e) =>
+                  setDishData({ ...dishData, menuId: e.target.value })
+                }
+              >
+                <option value="">Select Category</option>
+                {menus.map((m) => (
+                  <option key={m._id} value={m._id}>
+                    {m.name}
+                  </option>
+                ))}
+              </select>
+
+              <input
+                placeholder="Dish Name"
+                value={dishData.name}
+                onChange={(e) =>
+                  setDishData({ ...dishData, name: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+
+              <input
+                type="number"
+                placeholder="Price"
+                value={dishData.price}
+                onChange={(e) =>
+                  setDishData({ ...dishData, price: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+            </>
+          )}
+
+          {/* BUTTON */}
+          <button className="w-full bg-yellow-400 py-3 rounded font-bold">
+            Submit
           </button>
         </form>
       </motion.div>
