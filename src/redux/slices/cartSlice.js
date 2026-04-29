@@ -1,25 +1,35 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = [];
-
 const cartSlice = createSlice({
-    name : "cart",
-    initialState,
-    reducers : {
-        addItems : (state, action) => {
-            state.push(action.payload);
-        },
+  name: "cart",
+  initialState: [],
+  reducers: {
+    addItems: (state, action) => {
+      const item = action.payload;
+      const existing = state.find(i => i.itemId === item.itemId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        state.push({
+          itemId: item.itemId,
+          name: item.name,
+          price: item.price,
+          quantity: 1
+        });
+      }
+    },
+    // ✅ เพิ่มสำหรับอัปเดตรายการอาหารทั้งหมดจาก Database
+    setItems: (state, action) => {
+      return action.payload; 
+    },
+    removeItem: (state, action) =>
+      state.filter(i => i.itemId !== action.payload),
+    removeAllItems: () => []
+  }
+});
 
-        removeItem: (state, action) => {
-            return state.filter(item => item.id != action.payload);
-        },
+export const getTotalPrice = (state) =>
+  state.cart.reduce((t, i) => t + i.price * i.quantity, 0);
 
-        removeAllItems: (state) => {
-            return [];
-        }
-    }
-})
-
-export const getTotalPrice = (state) => state.cart.reduce((total, item) => total + item.price, 0);
-export const { addItems, removeItem, removeAllItems } = cartSlice.actions;
+export const { addItems, removeItem, removeAllItems, setItems } = cartSlice.actions;
 export default cartSlice.reducer;

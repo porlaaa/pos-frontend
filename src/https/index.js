@@ -9,8 +9,12 @@ export const logout = () => axiosWrapper.post("/api/user/logout");
 // ===== TABLE =====
 export const addTable = (data) => axiosWrapper.post("/api/table/", data);
 export const getTables = () => axiosWrapper.get("/api/table");
-export const updateTable = ({ tableId, ...tableData }) =>
-  axiosWrapper.put(`/api/table/${tableId}`, tableData);
+
+// ✅ แก้ไข: ป้องกันปัญหา tableId หลุดไปเป็น Object [object Object]
+export const updateTable = ({ tableId, ...tableData }) => {
+  const id = typeof tableId === 'object' ? tableId._id : tableId;
+  return axiosWrapper.put(`/api/table/${id}`, tableData);
+};
 
 // ===== MENU (CATEGORY) =====
 export const getMenus = () => axiosWrapper.get("/api/menu");
@@ -36,5 +40,21 @@ export const verifyPaymentRazorpay = (data) =>
 // ===== ORDER =====
 export const addOrder = (data) => axiosWrapper.post("/api/order/", data);
 export const getOrders = () => axiosWrapper.get("/api/order");
-export const updateOrderStatus = ({ orderId, orderStatus }) =>
-  axiosWrapper.put(`/api/order/${orderId}`, { orderStatus });
+
+// ✅ แก้ไข: ป้องกันปัญหา orderId เป็น Object และรองรับการ Update สถานะ
+export const updateOrderStatus = ({ orderId, orderStatus }) => {
+  const id = typeof orderId === 'object' ? orderId._id : orderId;
+  return axiosWrapper.put(`/api/order/${id}`, { orderStatus });
+};
+
+// ✅ เพิ่มใหม่: สำหรับดึง Order จาก Table ID (ใช้แก้ปัญหา N/A ในหน้าโต๊ะ)
+export const getOrderByTableId = (tableId) => {
+  const id = typeof tableId === 'object' ? tableId._id : tableId;
+  return axiosWrapper.get(`/api/order/table/${id}`);
+};
+
+// ✅ เพิ่มใหม่: สำหรับเพิ่ม Item เข้าใน Order เดิม (ถ้าต้องการใช้ในหน้าจัดการ Order)
+export const addItemToOrder = (orderId, data) => {
+  const id = typeof orderId === 'object' ? orderId._id : orderId;
+  return axiosWrapper.put(`/api/order/${id}/add-item`, data);
+};
