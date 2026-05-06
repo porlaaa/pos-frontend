@@ -48,6 +48,16 @@ const OrderCard = ({ order }) => {
                   Ready to serve
                 </p>
               </>
+            ) : order.orderStatus === "Completed" ? (
+              <>
+                <p className="text-blue-600 bg-[#2e3a4a] px-2 py-1 rounded-lg">
+                  <FaCheckDouble className="inline mr-2" /> Completed
+                </p>
+                <p className="text-[#ababab] text-sm">
+                  <FaCircle className="inline mr-2 text-blue-600" />
+                  Order completed
+                </p>
+              </>
             ) : (
               <>
                 <p className="text-yellow-600 bg-[#4a452e] px-2 py-1 rounded-lg">
@@ -75,7 +85,7 @@ const OrderCard = ({ order }) => {
       <div className="flex items-center justify-between mt-4">
         <h1 className="text-[#f5f5f5] text-lg font-semibold">Total</h1>
         <p className="text-[#f5f5f5] text-lg font-semibold">
-          ₹{total.toFixed(2)}
+          ${total.toFixed(2)}
         </p>
       </div>
     </div>

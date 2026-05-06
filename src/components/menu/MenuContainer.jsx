@@ -128,7 +128,7 @@ const MenuContainer = () => {
               </div>
               <div className="flex items-center justify-between w-full">
                 <p className="text-[#f5f5f5] text-xl font-bold">
-                  ₹{item.price}
+                  ${item.price}
                 </p>
                 <div className="flex items-center justify-between bg-[#1f1f1f] px-2 sm:px-4 py-2 sm:py-3 rounded-lg gap-2 sm:gap-6 w-[60%] sm:w-[50%]">
                   <button

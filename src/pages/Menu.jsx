@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import BottomNav from "../components/shared/BottomNav";
 import BackButton from "../components/shared/BackButton";
 import { MdRestaurantMenu } from "react-icons/md";
 import MenuContainer from "../components/menu/MenuContainer";
@@ -17,7 +16,7 @@ const Menu = () => {
   const customerData = useSelector((state) => state.customer);
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden flex flex-col lg:flex-row gap-3 pb-24 lg:pb-0">
+    <section className="bg-[#1f1f1f] h-full flex flex-col lg:flex-row gap-3">
       {/* Left Div */}
       <div className="flex-[3] flex flex-col">
         <div className="flex items-center justify-between px-10 py-4">
@@ -55,8 +54,6 @@ const Menu = () => {
         {/* Bills */}
         <Bill />
       </div>
-
-      <BottomNav />
     </section>
   );
 };

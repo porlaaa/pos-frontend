@@ -7,15 +7,26 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { enqueueSnackbar } from "notistack";
-import { getOrders, updateOrderStatus } from "../../https/index";
+import { getOrders, updateOrderStatus, updateTable } from "../../https/index";
 import { formatDateAndTime } from "../../utils";
 
 const RecentOrders = () => {
   const queryClient = useQueryClient();
 
-  const handleStatusChange = ({ orderId, orderStatus }) => {
+  const handleStatusChange = ({ orderId, orderStatus, tableId }) => {
     orderStatusUpdateMutation.mutate({ orderId, orderStatus });
+    
+    if (orderStatus === "Completed" && tableId) {
+      tableUpdateMutation.mutate({ tableId, status: "Available" });
+    }
   };
+
+  const tableUpdateMutation = useMutation({
+    mutationFn: (reqData) => updateTable(reqData),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["tables"]);
+    },
+  });
 
   const orderStatusUpdateMutation = useMutation({
     mutationFn: ({ orderId, orderStatus }) =>
@@ -90,6 +101,8 @@ const RecentOrders = () => {
                     className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${
                       order.orderStatus === "Ready"
                         ? "text-green-500"
+                        : order.orderStatus === "Completed"
+                        ? "text-blue-500"
                         : "text-yellow-500"
                     }`}
                     value={order.orderStatus}
@@ -97,11 +110,13 @@ const RecentOrders = () => {
                       handleStatusChange({
                         orderId: order._id,
                         orderStatus: e.target.value,
+                        tableId: order.table?._id,
                       })
                     }
                   >
                     <option value="In Progress">In Progress</option>
                     <option value="Ready">Ready</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </td>
 
@@ -118,7 +133,7 @@ const RecentOrders = () => {
                 </td>
 
                 <td className="p-4">
-                  ₹{order.bills?.totalWithTax || 0}
+                  ${order.bills?.totalWithTax || 0}
                 </td>
 
                 <td className="p-4">{order.paymentMethod}</td>

@@ -2,7 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { getAvatarName, getBgColor } from "../../utils"
 import { useDispatch } from "react-redux";
-import { updateTable } from "../../redux/slices/customerSlice";
+import { updateTable, removeCustomer } from "../../redux/slices/customerSlice";
+import { removeAllItems } from "../../redux/slices/cartSlice";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
 const TableCard = ({id, name, status, initials, seats}) => {
@@ -10,6 +11,9 @@ const TableCard = ({id, name, status, initials, seats}) => {
   const navigate = useNavigate();
   const handleClick = (name) => {
     if(status === "Booked") return;
+
+    dispatch(removeCustomer());
+    dispatch(removeAllItems());
 
     const table = { tableId: id, tableNo: name }
     dispatch(updateTable({table}))
