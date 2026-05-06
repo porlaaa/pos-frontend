@@ -6,17 +6,17 @@ import { updateTable, removeCustomer } from "../../redux/slices/customerSlice";
 import { removeAllItems } from "../../redux/slices/cartSlice";
 import { FaLongArrowAltRight } from "react-icons/fa";
 
-const TableCard = ({id, name, status, initials, seats}) => {
+const TableCard = ({ id, name, status, initials, seats }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = (name) => {
-    if(status === "Booked") return;
+    if (status === "Booked") return;
 
     dispatch(removeCustomer());
     dispatch(removeAllItems());
 
     const table = { tableId: id, tableNo: name }
-    dispatch(updateTable({table}))
+    dispatch(updateTable({ table }))
     navigate(`/menu`);
   };
 
@@ -29,7 +29,7 @@ const TableCard = ({id, name, status, initials, seats}) => {
         </p>
       </div>
       <div className="flex items-center justify-center mt-5 mb-8">
-        <h1 className={`text-white rounded-full p-5 text-xl`} style={{backgroundColor : initials ? getBgColor(initials) : "#1f1f1f"}} >{getAvatarName(initials) || "N/A"}</h1>
+        <h1 className={`text-white rounded-full p-5 text-xl`} style={{ backgroundColor: initials ? getBgColor(initials) : "#1f1f1f" }} >{getAvatarName(initials) || "N/A"}</h1>
       </div>
       <p className="text-[#ababab] text-xs">Seats: <span className="text-[#f5f5f5]">{seats}</span></p>
     </div>
