@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
   addOrder,
+  addItemToOrder,
   createOrderRazorpay,
   updateTable,
   verifyPaymentRazorpay,
@@ -97,8 +98,11 @@ const Bill = () => {
                 tax: tax,
                 totalWithTax: totalPriceWithTax,
               },
-              items: cartData,
-              table: customerData.table.tableId,
+              items: cartData.map((item) => ({
+                _id: item.itemId || item._id || item.id,
+                quantity: item.quantity,
+              })),
+              table: customerData.table,
               paymentMethod: paymentMethod,
               paymentData: {
                 razorpay_order_id: response.razorpay_order_id,
@@ -140,8 +144,11 @@ const Bill = () => {
           tax: tax,
           totalWithTax: totalPriceWithTax,
         },
-        items: cartData,
-        table: customerData.table.tableId,
+        items: cartData.map((item) => ({
+          _id: item.itemId || item._id || item.id,
+          quantity: item.quantity,
+        })),
+        table: customerData.table,
         paymentMethod: paymentMethod,
       };
       orderMutation.mutate(orderData);
@@ -149,31 +156,57 @@ const Bill = () => {
   };
 
   const orderMutation = useMutation({
-    mutationFn: (reqData) => addOrder(reqData),
+
+    mutationFn: async (reqData) => {
+
+      // ✅ มี order เดิม = เพิ่ม item เข้า order เดิม
+      if (customerData.orderId) {
+
+        return await addItemToOrder(
+          customerData.orderId,
+          reqData
+        );
+      }
+
+      // ✅ ยังไม่มี order = create ใหม่
+      return await addOrder(reqData);
+    },
+
     onSuccess: (resData) => {
+
       const { data } = resData.data;
+
       console.log(data);
 
       setOrderInfo(data);
 
-      // Update Table
-      const tableData = {
-        status: "Booked",
-        orderId: data._id,
-        tableId: data.table,
-      };
+      // ✅ create ใหม่ครั้งแรกเท่านั้น
+      if (!customerData.orderId) {
 
-      setTimeout(() => {
-        tableUpdateMutation.mutate(tableData);
-      }, 1500);
+        const tableData = {
+          status: "Booked",
+          orderId: data._id,
+          tableId: data.table,
+        };
+
+        setTimeout(() => {
+          tableUpdateMutation.mutate(tableData);
+        }, 1500);
+      }
 
       enqueueSnackbar("Order Placed!", {
         variant: "success",
       });
+
       setShowInvoice(true);
     },
+
     onError: (error) => {
       console.log(error);
+
+      enqueueSnackbar("Failed to place order!", {
+        variant: "error",
+      });
     },
   });
 
@@ -181,7 +214,6 @@ const Bill = () => {
     mutationFn: (reqData) => updateTable(reqData),
     onSuccess: (resData) => {
       console.log(resData);
-      dispatch(removeCustomer());
       dispatch(removeAllItems());
     },
     onError: (error) => {
@@ -193,38 +225,36 @@ const Bill = () => {
     <>
       <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-[#ababab] font-medium mt-2">
-          Items({cartData.lenght})
+          Items({cartData.length})
         </p>
         <h1 className="text-[#f5f5f5] text-md font-bold">
-          ₹{total.toFixed(2)}
+          ${total.toFixed(2)}
         </h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-[#ababab] font-medium mt-2">Tax(5.25%)</p>
-        <h1 className="text-[#f5f5f5] text-md font-bold">₹{tax.toFixed(2)}</h1>
+        <h1 className="text-[#f5f5f5] text-md font-bold">${tax.toFixed(2)}</h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-[#ababab] font-medium mt-2">
           Total With Tax
         </p>
         <h1 className="text-[#f5f5f5] text-md font-bold">
-          ₹{totalPriceWithTax.toFixed(2)}
+          ${totalPriceWithTax.toFixed(2)}
         </h1>
       </div>
       <div className="flex items-center gap-3 px-5 mt-4">
         <button
           onClick={() => setPaymentMethod("Cash")}
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod === "Cash" ? "bg-[#383737]" : ""
-          }`}
+          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${paymentMethod === "Cash" ? "bg-[#383737]" : ""
+            }`}
         >
           Cash
         </button>
         <button
           onClick={() => setPaymentMethod("Online")}
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod === "Online" ? "bg-[#383737]" : ""
-          }`}
+          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${paymentMethod === "Online" ? "bg-[#383737]" : ""
+            }`}
         >
           Online
         </button>
@@ -243,7 +273,11 @@ const Bill = () => {
       </div>
 
       {showInvoice && (
-        <Invoice orderInfo={orderInfo} setShowInvoice={setShowInvoice} />
+        <Invoice
+          orderInfo={orderInfo}
+          currentItems={cartData}
+          setShowInvoice={setShowInvoice}
+        />
       )}
     </>
   );

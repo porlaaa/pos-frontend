@@ -1,9 +1,30 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getOrders, getMenus, getItems } from "../../https";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getOrders, getMenus, getItems, deleteMenu } from "../../https";
 import ItemCard from "./ItemCard";
+import { enqueueSnackbar } from "notistack";
+import { FaTrash } from "react-icons/fa";
 
 const Metrics = () => {
+  
+  const queryClient = useQueryClient();
+
+  const deleteCategoryMutation = useMutation({
+    mutationFn: (id) => deleteMenu(id),
+    onSuccess: () => {
+      enqueueSnackbar("Category deleted successfully", { variant: "success" });
+      queryClient.invalidateQueries(["menus"]);
+    },
+    onError: () => {
+      enqueueSnackbar("Failed to delete category", { variant: "error" });
+    }
+  });
+
+  const handleDeleteCategory = (id) => {
+    if (window.confirm("Delete this category?")) {
+      deleteCategoryMutation.mutate(id);
+    }
+  };
 
   // ===== ORDERS =====
   const { data: orderRes, isLoading: orderLoading } = useQuery({
@@ -61,7 +82,7 @@ const Metrics = () => {
         <div className="bg-green-600 p-4 rounded">
           <p className="text-white text-sm">Total Earnings</p>
           <p className="text-white text-2xl font-bold">
-            ₹{totalEarnings.toLocaleString()}
+            ${totalEarnings.toLocaleString()}
           </p>
         </div>
 
@@ -102,16 +123,31 @@ const Metrics = () => {
           );
 
           return (
-            <div key={menu._id} className="mb-8">
+            <div key={menu._id} className="mb-8 bg-[#1a1a1a] p-6 rounded-xl border border-[#2a2a2a] shadow-sm">
 
-              <h3 className="text-yellow-400 text-lg mb-3">
-                {menu.name}
-              </h3>
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-lg flex items-center justify-center text-2xl shadow-lg" style={{ backgroundColor: menu.bgColor || "#f6b100" }}>
+                    {menu.icon}
+                  </div>
+                  <h3 className="text-white text-xl font-bold tracking-wide">
+                    {menu.name}
+                  </h3>
+                </div>
 
-              <div className="grid grid-cols-4 gap-4">
+                <button
+                  onClick={() => handleDeleteCategory(menu._id)}
+                  className="text-gray-500 hover:text-red-500 hover:bg-red-500/10 p-3 rounded-lg transition-colors duration-200"
+                  title="Delete Category"
+                >
+                  <FaTrash size={18} />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
 
                 {categoryItems.length === 0 && (
-                  <p className="text-gray-400">No items</p>
+                  <p className="text-gray-400 italic">No items available in this category.</p>
                 )}
 
                 {categoryItems.map((item) => (

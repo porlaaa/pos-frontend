@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import BottomNav from "../components/shared/BottomNav";
 import Greetings from "../components/home/Greetings";
 import { BsCashCoin } from "react-icons/bs";
 import { GrInProgress } from "react-icons/gr";
@@ -38,14 +37,14 @@ const Home = () => {
   }
 
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden flex flex-col lg:flex-row gap-3 pb-24 lg:pb-0">
-      
+    <section className="bg-[#1f1f1f] flex flex-col lg:flex-row gap-3 p-6 h-full">
+
       {/* Left */}
       <div className="flex-[3]">
         <Greetings />
 
         <div className="flex flex-col sm:flex-row items-center w-full gap-3 px-8 mt-8">
-          
+
           <MiniCard
             title="Total Earnings"
             icon={<BsCashCoin />}
@@ -69,8 +68,6 @@ const Home = () => {
       <div className="flex-[2]">
         <PopularDishes />
       </div>
-
-      <BottomNav />
     </section>
   );
 };

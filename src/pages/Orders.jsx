@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import BottomNav from "../components/shared/BottomNav";
 import OrderCard from "../components/orders/OrderCard";
 import BackButton from "../components/shared/BackButton";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -26,8 +25,17 @@ const Orders = () => {
     enqueueSnackbar("Something went wrong!", {variant: "error"})
   }
 
+  const orders = resData?.data?.data || [];
+  const filteredOrders = orders.filter((order) => {
+    if (status === "all") return true;
+    if (status === "progress" && order.orderStatus === "In Progress") return true;
+    if (status === "ready" && order.orderStatus === "Ready") return true;
+    if (status === "completed" && order.orderStatus === "Completed") return true;
+    return false;
+  });
+
   return (
-    <section className="bg-[#1f1f1f] h-[calc(100vh-5rem)] overflow-y-auto overflow-x-hidden flex flex-col pb-24 lg:pb-0">
+    <section className="bg-[#1f1f1f] min-h-screen flex flex-col">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between px-6 sm:px-10 py-4 gap-4 md:gap-0">
         <div className="flex items-center gap-4">
           <BackButton />
@@ -51,17 +59,15 @@ const Orders = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 px-6 sm:px-16 py-4 flex-1 pb-4 overflow-y-auto scrollbar-hide">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 px-6 sm:px-16 py-4 flex-1 pb-4 overflow-y-auto scrollbar-hide content-start">
         {
-          resData?.data.data.length > 0 ? (
-            resData.data.data.map((order) => {
+          filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => {
               return <OrderCard key={order._id} order={order} />
             })
           ) : <p className="col-span-3 text-gray-500">No orders available</p>
         }
       </div>
-
-      <BottomNav />
     </section>
   );
 };

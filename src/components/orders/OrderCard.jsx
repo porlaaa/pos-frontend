@@ -28,7 +28,7 @@ const OrderCard = ({ order }) => {
             </h1>
 
             <p className="text-[#ababab] text-sm">
-              #{Math.floor(new Date(order.orderDate).getTime())} / Dine in
+              #{order._id?.slice(-6)} / Dine in
             </p>
 
             <p className="text-[#ababab] text-sm">
@@ -46,6 +46,16 @@ const OrderCard = ({ order }) => {
                 <p className="text-[#ababab] text-sm">
                   <FaCircle className="inline mr-2 text-green-600" />
                   Ready to serve
+                </p>
+              </>
+            ) : order.orderStatus === "Completed" ? (
+              <>
+                <p className="text-blue-600 bg-[#2e3a4a] px-2 py-1 rounded-lg">
+                  <FaCheckDouble className="inline mr-2" /> Completed
+                </p>
+                <p className="text-[#ababab] text-sm">
+                  <FaCircle className="inline mr-2 text-blue-600" />
+                  Order completed
                 </p>
               </>
             ) : (
@@ -66,7 +76,7 @@ const OrderCard = ({ order }) => {
 
       {/* Bottom */}
       <div className="flex justify-between items-center mt-4 text-[#ababab]">
-        <p>{formatDateAndTime(order.orderDate)}</p>
+        <p>{formatDateAndTime(order.createdAt)}</p>
         <p>{itemsCount} Items</p>
       </div>
 
@@ -75,7 +85,7 @@ const OrderCard = ({ order }) => {
       <div className="flex items-center justify-between mt-4">
         <h1 className="text-[#f5f5f5] text-lg font-semibold">Total</h1>
         <p className="text-[#f5f5f5] text-lg font-semibold">
-          ₹{total.toFixed(2)}
+          ${total.toFixed(2)}
         </p>
       </div>
     </div>

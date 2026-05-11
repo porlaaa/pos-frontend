@@ -57,4 +57,4 @@ export const getOrderByTableId = (tableId) => {
 export const addItemToOrder = (orderId, data) => {
   const id = typeof orderId === 'object' ? orderId._id : orderId;
   return axiosWrapper.put(`/api/order/${id}/add-item`, data);
-};
+}; 

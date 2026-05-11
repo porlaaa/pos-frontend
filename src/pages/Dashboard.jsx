@@ -26,7 +26,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="bg-[#1f1f1f] min-h-[calc(100vh-5rem)]">
+    <section className="bg-[#1f1f1f] h-full flex flex-col">
       <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-14 px-6 md:px-4">
 
         {/* Buttons */}
@@ -47,11 +47,10 @@ const Dashboard = () => {
           {tabs.map((tab) => (
             <button
               key={tab}
-              className={`px-6 py-3 rounded-lg text-[#f5f5f5] font-semibold ${
-                activeTab === tab
+              className={`px-6 py-3 rounded-lg text-[#f5f5f5] font-semibold ${activeTab === tab
                   ? "bg-[#262626]"
                   : "bg-[#1a1a1a] hover:bg-[#262626]"
-              }`}
+                }`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -75,7 +74,7 @@ const Dashboard = () => {
       {modalType && (
         <Modal type={modalType} setModalType={setModalType} />
       )}
-    </div>
+    </section>
   );
 };
 

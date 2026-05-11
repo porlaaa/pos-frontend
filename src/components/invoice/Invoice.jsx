@@ -2,17 +2,21 @@ import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
 
-const Invoice = ({ orderInfo = {}, setShowInvoice }) => {
+const Invoice = ({
+  orderInfo = {},
+  currentItems = [],
+  setShowInvoice
+}) => {
   const invoiceRef = useRef(null);
 
   // ✅ safe data
   const customer = orderInfo?.customerDetails || {};
   const bills = orderInfo?.bills || {};
-  const items = orderInfo?.items || [];
+  const items = currentItems || [];
 
   // ✅ safe date
-  const orderId = orderInfo?.orderDate
-    ? Math.floor(new Date(orderInfo.orderDate).getTime())
+  const orderId = orderInfo?._id
+    ? orderInfo._id.slice(-6)
     : "-";
 
   const handlePrint = () => {
@@ -100,7 +104,7 @@ const Invoice = ({ orderInfo = {}, setShowInvoice }) => {
                     {item?.name || "Item"} x{item?.quantity || 0}
                   </span>
                   <span>
-                    ₹{item?.price?.toFixed?.(2) || "0.00"}
+                    ${item?.price?.toFixed?.(2) || "0.00"}
                   </span>
                 </li>
               ))}
