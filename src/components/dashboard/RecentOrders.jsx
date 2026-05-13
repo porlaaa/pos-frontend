@@ -15,9 +15,13 @@ const RecentOrders = () => {
 
   const handleStatusChange = ({ orderId, orderStatus, tableId }) => {
     orderStatusUpdateMutation.mutate({ orderId, orderStatus });
-    
+
     if (orderStatus === "Completed" && tableId) {
-      tableUpdateMutation.mutate({ tableId, status: "Available" });
+      tableUpdateMutation.mutate({
+        tableId,
+        status: "Available",
+        currentOrder: null,
+      });
     }
   };
 
@@ -55,7 +59,10 @@ const RecentOrders = () => {
   }
 
   // ✅ FIX หลักอยู่ตรงนี้
-  const orders = resData?.data?.data || [];
+  const orders =
+  (resData?.data?.data || []).filter(
+    (order) => order.orderStatus?.trim() !== "Completed"
+  );
 
   if (isLoading) {
     return <div className="text-white">Loading...</div>;
@@ -89,7 +96,7 @@ const RecentOrders = () => {
                 className="border-b border-gray-600 hover:bg-[#333]"
               >
                 <td className="p-4">
-                  #{Math.floor(new Date(order.orderDate).getTime())}
+                  #{order._id.slice(-6)}
                 </td>
 
                 <td className="p-4">
@@ -98,13 +105,12 @@ const RecentOrders = () => {
 
                 <td className="p-4">
                   <select
-                    className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${
-                      order.orderStatus === "Ready"
-                        ? "text-green-500"
-                        : order.orderStatus === "Completed"
+                    className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${order.orderStatus === "Ready"
+                      ? "text-green-500"
+                      : order.orderStatus === "Completed"
                         ? "text-blue-500"
                         : "text-yellow-500"
-                    }`}
+                      }`}
                     value={order.orderStatus}
                     onChange={(e) =>
                       handleStatusChange({
@@ -121,7 +127,7 @@ const RecentOrders = () => {
                 </td>
 
                 <td className="p-4">
-                  {formatDateAndTime(order.orderDate)}
+                  {formatDateAndTime(order.createdAt)}
                 </td>
 
                 <td className="p-4">
@@ -136,7 +142,9 @@ const RecentOrders = () => {
                   ${order.bills?.totalWithTax || 0}
                 </td>
 
-                <td className="p-4">{order.paymentMethod}</td>
+                <td className="p-4">
+                  {order.paymentMethod || "Cash"}
+                </td>
               </tr>
             ))}
           </tbody>
