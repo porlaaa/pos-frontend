@@ -9,9 +9,9 @@ const Orders = () => {
 
   const [status, setStatus] = useState("all");
 
-    useEffect(() => {
-      document.title = "POS | Orders"
-    }, [])
+  useEffect(() => {
+    document.title = "POS | Orders"
+  }, [])
 
   const { data: resData, isError } = useQuery({
     queryKey: ["orders"],
@@ -21,13 +21,15 @@ const Orders = () => {
     placeholderData: keepPreviousData
   })
 
-  if(isError) {
-    enqueueSnackbar("Something went wrong!", {variant: "error"})
+  if (isError) {
+    enqueueSnackbar("Something went wrong!", { variant: "error" })
   }
 
   const orders = resData?.data?.data || [];
   const filteredOrders = orders.filter((order) => {
-    if (status === "all") return true;
+    if (status === "all") {
+      return order.orderStatus !== "Completed";
+    }
     if (status === "progress" && order.orderStatus === "In Progress") return true;
     if (status === "ready" && order.orderStatus === "Ready") return true;
     if (status === "completed" && order.orderStatus === "Completed") return true;

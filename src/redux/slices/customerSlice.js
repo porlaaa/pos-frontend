@@ -41,7 +41,7 @@ const customerSlice = createSlice({
 
     updateTable: (state, action) => {
 
-      state.table = action.payload.table;
+      state.table = action.payload.tableNo;
 
       if (action.payload.orderId) {
         state.orderId = action.payload.orderId;

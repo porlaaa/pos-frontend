@@ -67,7 +67,7 @@ const CustomerInfo = () => {
         </p>
 
         <p className="text-xs text-[#ababab] mt-1">
-          Table : {customerData.table || "N/A"}
+          Table : {customerData.tableNo || "N/A"}
         </p>
 
         <p className="text-xs text-[#ababab] mt-2">
