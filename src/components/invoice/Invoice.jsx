@@ -12,7 +12,7 @@ const Invoice = ({
   // ✅ safe data
   const customer = orderInfo?.customerDetails || {};
   const bills = orderInfo?.bills || {};
-  const items = currentItems || [];
+  const items = orderInfo?.items?.length ? orderInfo.items : (currentItems || []);
 
   // ✅ safe date
   const orderId = orderInfo?._id
@@ -104,7 +104,7 @@ const Invoice = ({
                     {item?.name || "Item"} x{item?.quantity || 0}
                   </span>
                   <span>
-                    ${item?.price?.toFixed?.(2) || "0.00"}
+                    ${(item?.total || item?.price || 0).toFixed(2)}
                   </span>
                 </li>
               ))}
@@ -115,15 +115,15 @@ const Invoice = ({
           <div className="mt-4 border-t pt-4 text-sm">
             <p>
               <strong>Subtotal:</strong>{" "}
-              ₹{bills.total?.toFixed?.(2) || "0.00"}
+              ${bills.total?.toFixed?.(2) || "0.00"}
             </p>
             <p>
               <strong>Tax:</strong>{" "}
-              ₹{bills.tax?.toFixed?.(2) || "0.00"}
+              ${bills.tax?.toFixed?.(2) || "0.00"}
             </p>
             <p className="text-md font-semibold">
               <strong>Grand Total:</strong>{" "}
-              ₹{bills.totalWithTax?.toFixed?.(2) || "0.00"}
+              ${bills.totalWithTax?.toFixed?.(2) || "0.00"}
             </p>
           </div>
 

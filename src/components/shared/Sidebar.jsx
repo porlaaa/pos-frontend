@@ -148,7 +148,7 @@ const Sidebar = () => {
             >
               <option value="" className="text-black bg-[#1f1f1f] border-none">-- Select a table (or skip) --</option>
               {availableTables.map(t => (
-                <option key={t._id} value={t._id} className="text-black bg-[#1f1f1f] border-none">Table {t.tableNo} ({t.seats} seats)</option>
+                <option key={t._id} value={t._id} className="text-black bg-[#1f1f1f] border-none">Table {t.tableNo}</option>
               ))}
             </select>
           </div>

@@ -13,22 +13,9 @@ const CartInfo = () => {
   const [searchParams] = useSearchParams();
   const tableId = searchParams.get("tableId");
 
-  useEffect(() => {
-    const fetchOrderItems = async () => {
-      if (tableId) {
-        try {
-          const res = await getOrderByTableId(tableId);
-          if (res.data.success && res.data.data.items) {
-            // ส่งรายการอาหารเข้า Redux เพื่อแสดงผลในหน้าจอ
-            dispatch(setItems(res.data.data.items));
-          }
-        } catch (error) {
-          console.error("Order items error:", error);
-        }
-      }
-    };
-    fetchOrderItems();
-  }, [tableId, dispatch]);
+  // Removed the useEffect that fetches existing order items
+  // to prevent confusing the user and to fix the double-billing issue
+  // when adding new items to an existing order.
 
   useEffect(() => {
     if (scrolLRef.current) {
@@ -55,7 +42,7 @@ const CartInfo = () => {
                   className="text-[#ababab] cursor-pointer hover:text-red-500" 
                   size={20} 
                 />
-                <p className="text-[#f5f5f5] text-md font-bold">₹{item.price}</p>
+                <p className="text-[#f5f5f5] text-md font-bold">${item.price}</p>
               </div>
             </div>
           ))

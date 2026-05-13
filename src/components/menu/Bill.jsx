@@ -182,16 +182,22 @@ const Bill = () => {
 
       // ✅ create ใหม่ครั้งแรกเท่านั้น
       if (!customerData.orderId) {
+        if (data.table) {
+          const tableData = {
+            status: "Booked",
+            orderId: data._id,
+            tableId: data.table,
+          };
 
-        const tableData = {
-          status: "Booked",
-          orderId: data._id,
-          tableId: data.table,
-        };
-
-        setTimeout(() => {
-          tableUpdateMutation.mutate(tableData);
-        }, 1500);
+          setTimeout(() => {
+            tableUpdateMutation.mutate(tableData);
+          }, 1500);
+        } else {
+          dispatch(removeAllItems());
+        }
+      } else {
+        // ✅ ถ้ามี order เดิมอยู่แล้ว เคลียร์ตะกร้าได้เลย ไม่ต้องอัปเดตสถานะโต๊ะอีก
+        dispatch(removeAllItems());
       }
 
       enqueueSnackbar("Order Placed!", {

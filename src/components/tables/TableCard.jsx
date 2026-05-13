@@ -40,10 +40,6 @@ const TableCard = ({ id, name, status, initials, seats }) => {
           {getAvatarName(initials) || "N/A"}
         </h1>
       </div>
-
-      <p className="text-[#ababab] text-xs font-medium">
-        Seats: <span className="text-[#f5f5f5] ml-1">{seats}</span>
-      </p>
     </div>
   );
 };
