@@ -16,7 +16,7 @@ const OrderList = ({ order }) => {
         {getAvatarName(name)}
       </button>
 
-      <div className="flex items-center justify-between w-[100%]">
+      <div className="grid grid-cols-3 items-center w-full">
         <div className="flex flex-col items-start gap-1">
           <h1 className="text-[#f5f5f5] text-lg font-semibold tracking-wide">
             {name}
@@ -24,10 +24,12 @@ const OrderList = ({ order }) => {
           <p className="text-[#ababab] text-sm">{itemCount} Items</p>
         </div>
 
-        <h1 className="text-[#f6b100] font-semibold border border-[#f6b100] rounded-lg p-1">
-          Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" />{" "}
-          {tableNo}
-        </h1>
+        <div className="flex justify-center">
+          <h1 className="text-[#f6b100] font-semibold border border-[#f6b100] rounded-lg py-1 px-4">
+            Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" />{" "}
+            {tableNo}
+          </h1>
+        </div>
 
         <div className="flex flex-col items-end gap-2">
           {status === "Ready" ? (

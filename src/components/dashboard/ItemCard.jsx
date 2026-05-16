@@ -10,6 +10,7 @@ const ItemCard = ({ item }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
   const [editPrice, setEditPrice] = useState(item.price);
+  const [editImage, setEditImage] = useState(item.image || "");
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteItem(item._id),
@@ -44,14 +45,18 @@ const ItemCard = ({ item }) => {
       enqueueSnackbar("Please fill all fields", { variant: "warning" });
       return;
     }
-    updateMutation.mutate({ name: editName, price: Number(editPrice) });
+    updateMutation.mutate({ name: editName, price: Number(editPrice), image: editImage });
   };
 
   return (
     <div className="bg-[#222222] p-4 rounded-xl flex justify-between items-center border border-[#2a2a2a] hover:-translate-y-1 hover:shadow-lg hover:border-[#f6b100]/50 transition-all duration-300">
       <div className="flex items-center gap-4 w-full mr-2">
-        <div className="bg-[#2c2c2c] p-3 rounded-lg text-gray-400">
-          <BiSolidDish size={24} />
+        <div className="bg-[#2c2c2c] w-12 h-12 rounded-lg text-gray-400 flex justify-center items-center overflow-hidden shrink-0">
+          {item.image ? (
+            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+          ) : (
+            <BiSolidDish size={24} />
+          )}
         </div>
         {isEditing ? (
           <div className="flex flex-col gap-2 flex-1">
@@ -67,6 +72,12 @@ const ItemCard = ({ item }) => {
               onChange={(e) => setEditPrice(e.target.value)}
               className="bg-[#1a1a1a] text-white px-2 py-1 rounded border border-[#333] w-full focus:outline-none focus:border-[#f6b100]"
               placeholder="Price"
+            />
+            <input
+              value={editImage}
+              onChange={(e) => setEditImage(e.target.value)}
+              className="bg-[#1a1a1a] text-white px-2 py-1 rounded border border-[#333] w-full focus:outline-none focus:border-[#f6b100]"
+              placeholder="Image URL"
             />
           </div>
         ) : (
@@ -92,6 +103,7 @@ const ItemCard = ({ item }) => {
                 setIsEditing(false);
                 setEditName(item.name);
                 setEditPrice(item.price);
+                setEditImage(item.image || "");
               }}
               className="text-gray-500 hover:text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-colors duration-200"
             >

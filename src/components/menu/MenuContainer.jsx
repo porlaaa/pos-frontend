@@ -113,10 +113,15 @@ const MenuContainer = () => {
           return (
             <div
               key={item._id}
-              className="flex flex-col items-start justify-between p-4 rounded-lg h-[150px] cursor-pointer hover:bg-[#2a2a2a] bg-[#1a1a1a]"
+              className="flex flex-col items-start justify-between p-4 rounded-lg h-[150px] cursor-pointer hover:bg-[#2a2a2a] bg-[#1a1a1a] relative overflow-hidden"
             >
-              <div className="flex items-start justify-between w-full">
-                <h1 className="text-[#f5f5f5] text-lg font-semibold">
+              {item.image && (
+                <div className="absolute inset-0 w-full h-full opacity-30 pointer-events-none">
+                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                </div>
+              )}
+              <div className="flex items-start justify-between w-full relative z-10">
+                <h1 className="text-[#f5f5f5] text-lg font-bold drop-shadow-md">
                   {item.name}
                 </h1>
                 <button
@@ -126,8 +131,8 @@ const MenuContainer = () => {
                   <FaShoppingCart size={20} />
                 </button>
               </div>
-              <div className="flex items-center justify-between w-full">
-                <p className="text-[#f5f5f5] text-xl font-bold">
+              <div className="flex items-center justify-between w-full relative z-10">
+                <p className="text-[#f5f5f5] text-xl font-bold drop-shadow-md">
                   ${item.price}
                 </p>
                 <div className="flex items-center justify-between bg-[#1f1f1f] px-2 sm:px-4 py-2 sm:py-3 rounded-lg gap-2 sm:gap-6 w-[60%] sm:w-[50%]">

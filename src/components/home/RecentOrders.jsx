@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import OrderList from "./OrderList";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -18,6 +18,13 @@ const RecentOrders = () => {
     enqueueSnackbar("Something went wrong!", { variant: "error" });
   }
 
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredOrders = resData?.data?.data?.filter((order) => {
+    const name = order?.customerDetails?.name || "";
+    return name.toLowerCase().includes(searchQuery.toLowerCase());
+  }) || [];
+
   return (
     <div className="px-8 mt-6">
       <div className="bg-[#1a1a1a] w-full h-[400px] lg:h-[450px] rounded-lg flex flex-col">
@@ -35,18 +42,20 @@ const RecentOrders = () => {
           <input
             type="text"
             placeholder="Search recent orders"
-            className="bg-[#1f1f1f] outline-none text-[#f5f5f5]"
+            className="bg-[#1f1f1f] outline-none text-[#f5f5f5] w-full"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
         {/* Order list */}
         <div className="mt-4 px-6 overflow-y-scroll flex-1 pb-4 scrollbar-hide">
-          {resData?.data.data.length > 0 ? (
-            resData.data.data.map((order) => {
+          {filteredOrders.length > 0 ? (
+            filteredOrders.map((order) => {
               return <OrderList key={order._id} order={order} />;
             })
           ) : (
-            <p className="col-span-3 text-gray-500">No orders available</p>
+            <p className="col-span-3 text-gray-500">No orders found</p>
           )}
         </div>
       </div>

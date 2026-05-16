@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { MdTableBar, MdCategory } from "react-icons/md";
+import { MdCategory } from "react-icons/md";
 import { BiSolidDish } from "react-icons/bi";
 import Metrics from "../components/dashboard/Metrics";
 import RecentOrders from "../components/dashboard/RecentOrders";
 import Modal from "../components/dashboard/Modal";
 
 const buttons = [
-  { label: "Add Table", icon: <MdTableBar />, action: "table" },
   { label: "Add Category", icon: <MdCategory />, action: "category" },
   { label: "Add Dishes", icon: <BiSolidDish />, action: "dishes" },
 ];
 
-const tabs = ["Metrics", "Orders", "Payments"];
+const tabs = ["Sales Revenue", "Orders", "Payments"];
 
 const Dashboard = () => {
   useEffect(() => {
@@ -19,7 +18,7 @@ const Dashboard = () => {
   }, []);
 
   const [modalType, setModalType] = useState(null);
-  const [activeTab, setActiveTab] = useState("Metrics");
+  const [activeTab, setActiveTab] = useState("Sales Revenue");
 
   const handleOpenModal = (action) => {
     setModalType(action);
@@ -48,8 +47,8 @@ const Dashboard = () => {
             <button
               key={tab}
               className={`px-6 py-3 rounded-lg text-[#f5f5f5] font-semibold ${activeTab === tab
-                  ? "bg-[#262626]"
-                  : "bg-[#1a1a1a] hover:bg-[#262626]"
+                ? "bg-[#262626]"
+                : "bg-[#1a1a1a] hover:bg-[#262626]"
                 }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -61,7 +60,7 @@ const Dashboard = () => {
 
       {/* Content */}
       <div className="transition-all duration-300">
-        {activeTab === "Metrics" && <Metrics />}
+        {activeTab === "Sales Revenue" && <Metrics />}
         {activeTab === "Orders" && <RecentOrders />}
         {activeTab === "Payments" && (
           <div className="text-white p-6 container mx-auto">

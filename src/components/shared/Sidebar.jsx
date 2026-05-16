@@ -85,7 +85,7 @@ const Sidebar = () => {
         <div onClick={() => navigate("/")} className="flex items-center gap-3 p-6 cursor-pointer border-b border-[#333]">
           <img src={logo} className="h-10 w-10" alt="restro logo" />
           <h1 className="text-2xl font-bold text-[#f5f5f5] tracking-wide">
-            Restro OS
+            Restro POS
           </h1>
         </div>
 

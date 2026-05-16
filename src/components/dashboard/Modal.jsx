@@ -31,6 +31,7 @@ const Modal = ({ type, setModalType }) => {
     menuId: "",
     name: "",
     price: "",
+    image: "",
   });
 
   // 🔥 โหลด categories
@@ -109,6 +110,7 @@ const Modal = ({ type, setModalType }) => {
         name: dishData.name,
         price: Number(dishData.price),
         category: dishData.menuId, // 🔥 สำคัญ
+        image: dishData.image,
       });
     }
   };
@@ -230,6 +232,16 @@ const Modal = ({ type, setModalType }) => {
                 value={dishData.price}
                 onChange={(e) =>
                   setDishData({ ...dishData, price: e.target.value })
+                }
+                className="w-full p-3 bg-[#1f1f1f] text-white rounded"
+              />
+
+              <input
+                type="text"
+                placeholder="Image URL (Optional)"
+                value={dishData.image}
+                onChange={(e) =>
+                  setDishData({ ...dishData, image: e.target.value })
                 }
                 className="w-full p-3 bg-[#1f1f1f] text-white rounded"
               />
