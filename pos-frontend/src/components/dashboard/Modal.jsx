@@ -5,10 +5,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addTable,
   createMenu,
-  createItem, // ✅ ใช้ตัวใหม่
+  createItem, // ใช้ตัวใหม่
   getMenus,
 } from "../../https";
 import { enqueueSnackbar } from "notistack";
+import { normalizeImageUrl } from "../../utils";
 
 const Modal = ({ type, setModalType }) => {
   const queryClient = useQueryClient();
@@ -34,7 +35,7 @@ const Modal = ({ type, setModalType }) => {
     image: "",
   });
 
-  // 🔥 โหลด categories
+  // โหลด categories
   const { data } = useQuery({
     queryKey: ["menus"],
     queryFn: getMenus,
@@ -64,7 +65,7 @@ const Modal = ({ type, setModalType }) => {
     },
   });
 
-  // DISH (🔥 FIX ใหม่)
+  // DISH ( FIX ใหม่)
   const dishMutation = useMutation({
     mutationFn: createItem,
 
@@ -106,11 +107,18 @@ const Modal = ({ type, setModalType }) => {
         });
       }
 
+      const image = normalizeImageUrl(dishData.image);
+      if (dishData.image.trim() && !image) {
+        return enqueueSnackbar("Image URL must start with http:// or https://", {
+          variant: "warning",
+        });
+      }
+
       dishMutation.mutate({
         name: dishData.name,
         price: Number(dishData.price),
-        category: dishData.menuId, // 🔥 สำคัญ
-        image: dishData.image,
+        category: dishData.menuId,
+        image,
       });
     }
   };
@@ -238,7 +246,7 @@ const Modal = ({ type, setModalType }) => {
 
               <input
                 type="text"
-                placeholder="Image URL (Optional)"
+                placeholder="https://example.com/image.jpg"
                 value={dishData.image}
                 onChange={(e) =>
                   setDishData({ ...dishData, image: e.target.value })

@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { addItems } from "../../redux/slices/cartSlice";
 import { useQuery } from "@tanstack/react-query";
 import { getMenus, getItems } from "../../https";
+import { isValidImageUrl } from "../../utils";
 
 const MenuContainer = () => {
   const [selected, setSelected] = useState(null);
@@ -115,9 +116,9 @@ const MenuContainer = () => {
               key={item._id}
               className="flex flex-col items-start justify-between p-4 rounded-lg h-[150px] cursor-pointer hover:bg-[#2a2a2a] bg-[#1a1a1a] relative overflow-hidden"
             >
-              {item.image && (
+              {isValidImageUrl(item.image) && (
                 <div className="absolute inset-0 w-full h-full opacity-30 pointer-events-none">
-                  <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={item.image.trim()} alt={item.name} className="w-full h-full object-cover" />
                 </div>
               )}
               <div className="flex items-start justify-between w-full relative z-10">

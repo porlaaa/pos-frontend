@@ -1,3 +1,14 @@
+export const isValidImageUrl = (url) => {
+  if (!url || typeof url !== "string") return false;
+  const trimmed = url.trim();
+  return /^https?:\/\/.+/i.test(trimmed);
+};
+
+export const normalizeImageUrl = (url) => {
+  const trimmed = (url || "").trim();
+  return isValidImageUrl(trimmed) ? trimmed : "";
+};
+
 export const getBgColor = (name) => {
   const bgarr = [
     "#b73e3e",

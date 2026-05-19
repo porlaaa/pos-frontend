@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteItem, updateItem } from "../../https";
 import { enqueueSnackbar } from "notistack";
 import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 import { BiSolidDish } from "react-icons/bi";
+import { isValidImageUrl, normalizeImageUrl } from "../../utils";
 
 const ItemCard = ({ item }) => {
   const queryClient = useQueryClient();
@@ -11,6 +12,17 @@ const ItemCard = ({ item }) => {
   const [editName, setEditName] = useState(item.name);
   const [editPrice, setEditPrice] = useState(item.price);
   const [editImage, setEditImage] = useState(item.image || "");
+  const [imageError, setImageError] = useState(false);
+
+  const imageUrl = isValidImageUrl(item.image) ? item.image.trim() : "";
+  const showImage = imageUrl && !imageError;
+
+  useEffect(() => {
+    setEditName(item.name);
+    setEditPrice(item.price);
+    setEditImage(item.image || "");
+    setImageError(false);
+  }, [item]);
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteItem(item._id),
@@ -45,15 +57,33 @@ const ItemCard = ({ item }) => {
       enqueueSnackbar("Please fill all fields", { variant: "warning" });
       return;
     }
-    updateMutation.mutate({ name: editName, price: Number(editPrice), image: editImage });
+
+    const image = normalizeImageUrl(editImage);
+    if (editImage.trim() && !image) {
+      enqueueSnackbar("Image URL must start with http:// or https://", {
+        variant: "warning",
+      });
+      return;
+    }
+
+    updateMutation.mutate({
+      name: editName,
+      price: Number(editPrice),
+      image,
+    });
   };
 
   return (
     <div className="bg-[#222222] p-4 rounded-xl flex justify-between items-center border border-[#2a2a2a] hover:-translate-y-1 hover:shadow-lg hover:border-[#f6b100]/50 transition-all duration-300">
       <div className="flex items-center gap-4 w-full mr-2">
         <div className="bg-[#2c2c2c] w-12 h-12 rounded-lg text-gray-400 flex justify-center items-center overflow-hidden shrink-0">
-          {item.image ? (
-            <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+          {showImage ? (
+            <img
+              src={imageUrl}
+              alt={item.name}
+              className="w-full h-full object-cover"
+              onError={() => setImageError(true)}
+            />
           ) : (
             <BiSolidDish size={24} />
           )}
@@ -77,7 +107,7 @@ const ItemCard = ({ item }) => {
               value={editImage}
               onChange={(e) => setEditImage(e.target.value)}
               className="bg-[#1a1a1a] text-white px-2 py-1 rounded border border-[#333] w-full focus:outline-none focus:border-[#f6b100]"
-              placeholder="Image URL"
+              placeholder="https://example.com/image.jpg"
             />
           </div>
         ) : (
