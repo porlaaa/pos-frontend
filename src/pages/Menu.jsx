@@ -38,11 +38,13 @@ const Menu = () => {
     console.log("Current Table ID:", tableId);
 
     // reset state เก่า
-    dispatch(clearCurrentOrder());
+    dispatch(removeCustomer());
     dispatch(removeAllItems());
 
     // set โต๊ะใหม่
-    dispatch(setTable({ _id: tableId }));
+    dispatch(updateTable({
+      tableNo: tableId,
+    }));
   }, [tableId, dispatch]);
 
   return (
