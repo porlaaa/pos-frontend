@@ -21,7 +21,7 @@ const TableCard = ({ id, name, status, initials, seats }) => {
           Table <FaLongArrowAltRight className="text-[#ababab] ml-2 inline" size={15} /> {name}
         </h1>
         <p className={`${
-          status === "booked" 
+          status === "Booked" 
             ? "text-[#4ade80] bg-[#1a2e25]" 
             : "text-[#fbbf24] bg-[#3a2a0d]" 
           } px-3 py-1 rounded-lg text-xs font-bold uppercase`}

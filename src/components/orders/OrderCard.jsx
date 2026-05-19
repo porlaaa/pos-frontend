@@ -6,7 +6,7 @@ const OrderCard = ({ order }) => {
   if (!order) return null;
 
   const customerName = order.customerDetails?.name || "Guest";
-  const tableNo = order.table?.tableNo || "-";
+  const tableNo = order.table || "-";
   const itemsCount = (order.items || []).length;
   const total = order.bills?.totalWithTax || 0;
 

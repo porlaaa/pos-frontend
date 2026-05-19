@@ -93,22 +93,42 @@ const Invoice = ({
 
           {/* Items */}
           <div className="mt-4 border-t pt-4">
-            <h3 className="text-sm font-semibold">Items Ordered</h3>
+
+            <h3 className="text-sm font-semibold">
+              Items Ordered
+            </h3>
+
             <ul className="text-sm text-gray-700">
-              {(items || []).map((item, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between text-xs"
-                >
-                  <span>
-                    {item?.name || "Item"} x{item?.quantity || 0}
-                  </span>
-                  <span>
-                    ${(item?.total || item?.price || 0).toFixed(2)}
-                  </span>
-                </li>
-              ))}
+
+              {(items || []).map((item, index) => {
+
+                const total =
+                  item?.total ||
+                  (item?.price || 0) *
+                  (item?.quantity || 0);
+
+                return (
+
+                  <li
+                    key={index}
+                    className="flex justify-between text-xs"
+                  >
+
+                    <span>
+                      {item?.name || "Item"} x
+                      {item?.quantity || 0}
+                    </span>
+
+                    <span>
+                      ${total.toFixed(2)}
+                    </span>
+
+                  </li>
+                );
+              })}
+
             </ul>
+
           </div>
 
           {/* Bills */}

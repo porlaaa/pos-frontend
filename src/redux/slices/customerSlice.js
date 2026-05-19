@@ -17,13 +17,20 @@ const customerSlice = createSlice({
 
     setCustomer: (state, action) => {
 
-      const { name, phone, guests } = action.payload;
+      const {
+        name,
+        phone,
+        guests,
+        table,
+      } = action.payload;
 
       state.customerName = name;
 
       state.customerPhone = phone;
 
       state.guests = guests;
+
+      state.table = table;
     },
 
     removeCustomer: (state) => {
@@ -41,7 +48,7 @@ const customerSlice = createSlice({
 
     updateTable: (state, action) => {
 
-      state.table = action.payload.tableNo;
+      state.table = action.payload.table;
 
       if (action.payload.orderId) {
         state.orderId = action.payload.orderId;

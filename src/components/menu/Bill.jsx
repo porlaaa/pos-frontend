@@ -102,7 +102,7 @@ const Bill = () => {
                 _id: item.itemId || item._id || item.id,
                 quantity: item.quantity,
               })),
-              table: customerData.table,
+              table: Number(customerData.table),
               paymentMethod: paymentMethod,
               paymentData: {
                 razorpay_order_id: response.razorpay_order_id,
@@ -148,7 +148,7 @@ const Bill = () => {
           _id: item.itemId || item._id || item.id,
           quantity: item.quantity,
         })),
-        table: customerData.table,
+        table: Number(customerData.table),
         paymentMethod: paymentMethod,
       };
       orderMutation.mutate(orderData);
@@ -185,7 +185,7 @@ const Bill = () => {
         if (data.table) {
           const tableData = {
             status: "Booked",
-            orderId: data._id,
+            currentOrder: data._id,
             tableId: data.table,
           };
 

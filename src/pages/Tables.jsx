@@ -29,7 +29,7 @@ const Tables = () => {
   const tables = resData?.data?.data || [];
   
   const filteredTables = tables.filter((table) => {
-    if (status === "booked") return table.status === "Booked";
+    if (status === "Booked") return table.status === "Booked";
     return true;
   });
 
@@ -56,8 +56,8 @@ const Tables = () => {
           </button>
 
           <button
-            onClick={() => setStatus("booked")}
-            className={`px-5 py-2 rounded-lg font-semibold ${status === "booked"
+            onClick={() => setStatus("Booked")}
+            className={`px-5 py-2 rounded-lg font-semibold ${status === "Booked"
                 ? "bg-[#383838] text-white"
                 : "text-[#ababab]"
               }`}

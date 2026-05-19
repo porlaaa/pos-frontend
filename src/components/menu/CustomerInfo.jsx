@@ -6,60 +6,85 @@ import { getOrderByTableId } from "../../https/index";
 import { updateTable } from "../../redux/slices/customerSlice";
 
 const CustomerInfo = () => {
+
   const [dateTime] = useState(new Date());
+
   const [searchParams] = useSearchParams();
+
   const dispatch = useDispatch();
 
-  const customerData = useSelector((state) => state.customer);
+  const customerData = useSelector(
+    (state) => state.customer
+  );
 
-  const tableIdFromURL = searchParams.get("tableId");
+  // ✅ อ่าน tableId จาก URL
+  const tableId =
+    Number(searchParams.get("tableId"));
 
   useEffect(() => {
+
     const fetchOrder = async () => {
-      console.log("1. ตรวจสอบ ID จาก URL:", tableIdFromURL);
 
-      if (tableIdFromURL) {
-        try {
-          const res = await getOrderByTableId(tableIdFromURL);
+      console.log(
+        "FETCH TABLE ID:",
+        tableId
+      );
 
-          console.log("2. ข้อมูลจาก API:", res.data);
+      if (!tableId) return;
 
-          if (res.data.success) {
-            const order = res.data.data;
+      try {
 
-            dispatch(
-              updateTable({
-                customerName:
-                  order?.customerDetails?.name || "Guest",
+        const res =
+          await getOrderByTableId(
+            tableId
+          );
 
-                orderId:
-                  order?._id || "",
+        console.log(
+          "ORDER DATA:",
+          res.data
+        );
 
-                tableNo:
-                  order?.table?.tableNo || "N/A",
-              })
-            );
-          }
-        } catch (error) {
-          console.error(
-            "3. เกิดข้อผิดพลาดในการดึงข้อมูล:",
-            error
+        if (res.data.success) {
+
+          const order =
+            res.data.data;
+
+          dispatch(
+            updateTable({
+              table: order.table,
+
+              orderId:
+                order._id,
+
+              customerName:
+                order
+                  ?.customerDetails
+                  ?.name || "Guest",
+            })
           );
         }
-      } else {
-        console.warn("⚠️ ไม่พบ tableId ใน URL");
+
+      } catch (error) {
+
+        console.log(
+          "FETCH ORDER ERROR:",
+          error
+        );
       }
     };
 
     fetchOrder();
-  }, [tableIdFromURL, dispatch]);
+
+  }, [tableId, dispatch]);
 
   return (
     <div className="flex items-center justify-between px-4 py-3">
+
       <div className="flex flex-col items-start">
 
         <h1 className="text-md text-[#f5f5f5] font-semibold">
-          {customerData.customerName || "Customer Name"}
+          {customerData.customerName ||
+            "Customer Name"}
         </h1>
 
         <p className="text-xs text-[#ababab]">
@@ -67,7 +92,7 @@ const CustomerInfo = () => {
         </p>
 
         <p className="text-xs text-[#ababab] mt-1">
-          Table : {customerData.tableNo || "N/A"}
+          Table : {customerData.table || "N/A"}
         </p>
 
         <p className="text-xs text-[#ababab] mt-2">
@@ -76,7 +101,12 @@ const CustomerInfo = () => {
       </div>
 
       <button className="bg-[#f6b100] p-3 text-xl font-bold rounded-lg">
-        {getAvatarName(customerData.customerName || "CN")}
+
+        {getAvatarName(
+          customerData.customerName ||
+            "CN"
+        )}
+
       </button>
     </div>
   );

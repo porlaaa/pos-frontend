@@ -43,7 +43,7 @@ const Menu = () => {
 
     // set โต๊ะใหม่
     dispatch(updateTable({
-      tableNo: tableId,
+      table: Number(tableId),
     }));
   }, [tableId, dispatch]);
 
@@ -70,7 +70,7 @@ const Menu = () => {
                 </h1>
 
                 <p className="text-xs text-[#ababab] font-medium">
-                  Table : {customerData.table?.tableNo || "N/A"}
+                  Table : {customerData.table || "N/A"}
                 </p>
               </div>
             </div>
