@@ -6,73 +6,170 @@ import RecentOrders from "../components/dashboard/RecentOrders";
 import Modal from "../components/dashboard/Modal";
 
 const buttons = [
-  { label: "Add Category", icon: <MdCategory />, action: "category" },
-  { label: "Add Dishes", icon: <BiSolidDish />, action: "dishes" },
+  {
+    label: "Add Category",
+    icon: <MdCategory />,
+    action: "category",
+  },
+
+  {
+    label: "Add Dishes",
+    icon: <BiSolidDish />,
+    action: "dishes",
+  },
 ];
 
-const tabs = ["Sales Revenue", "Orders", "Payments"];
+const tabs = [
+  "Sales Revenue",
+  "Orders",
+  "Payments",
+];
 
 const Dashboard = () => {
+
   useEffect(() => {
-    document.title = "POS | Admin Dashboard";
+    document.title =
+      "POS | Admin Dashboard";
   }, []);
 
-  const [modalType, setModalType] = useState(null);
-  const [activeTab, setActiveTab] = useState("Sales Revenue");
+  const [modalType, setModalType] =
+    useState(null);
 
-  const handleOpenModal = (action) => {
+  const [activeTab, setActiveTab] =
+    useState("Sales Revenue");
+
+  const handleOpenModal = (
+    action
+  ) => {
     setModalType(action);
   };
 
   return (
-    <section className="bg-[#1f1f1f] h-full flex flex-col">
-      <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-4 py-14 px-6 md:px-4">
+    <section className="bg-[#1f1f1f] min-h-screen text-white">
 
-        {/* Buttons */}
-        <div className="flex flex-wrap items-center gap-3">
-          {buttons.map(({ label, icon, action }) => (
-            <button
-              key={action}
-              onClick={() => handleOpenModal(action)}
-              className="bg-[#1a1a1a] hover:bg-[#262626] px-6 py-3 rounded-lg text-[#f5f5f5] font-semibold flex items-center gap-2"
-            >
-              {label} {icon}
-            </button>
-          ))}
+      {/* HEADER */}
+      <div className="border-b border-[#2a2a2a]">
+
+        <div className="container mx-auto px-6 py-8">
+
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+
+            {/* LEFT */}
+            <div>
+
+              <h1 className="text-4xl font-bold">
+                Dashboard
+              </h1>
+
+              <p className="text-gray-400 mt-2">
+                Manage your restaurant
+                performance
+              </p>
+
+            </div>
+
+            {/* RIGHT */}
+            <div className="flex flex-wrap gap-3">
+
+              {buttons.map(
+                ({
+                  label,
+                  icon,
+                  action,
+                }) => (
+
+                  <button
+                    key={action}
+                    onClick={() =>
+                      handleOpenModal(
+                        action
+                      )
+                    }
+                    className="bg-[#262626] hover:bg-[#333] transition px-6 py-3 rounded-xl flex items-center gap-2 font-semibold"
+                  >
+                    {icon}
+                    {label}
+                  </button>
+                )
+              )}
+
+            </div>
+
+          </div>
+
         </div>
 
-        {/* Tabs */}
-        <div className="flex flex-wrap items-center gap-3">
+      </div>
+
+      {/* TABS */}
+      <div className="container mx-auto px-6 mt-8">
+
+        <div className="flex flex-wrap gap-3">
+
           {tabs.map((tab) => (
+
             <button
               key={tab}
-              className={`px-6 py-3 rounded-lg text-[#f5f5f5] font-semibold ${activeTab === tab
-                ? "bg-[#262626]"
-                : "bg-[#1a1a1a] hover:bg-[#262626]"
-                }`}
-              onClick={() => setActiveTab(tab)}
+              onClick={() =>
+                setActiveTab(tab)
+              }
+              className={`px-6 py-3 rounded-xl font-semibold transition ${
+                activeTab === tab
+                  ? "bg-[#f6b100] text-black"
+                  : "bg-[#262626] hover:bg-[#333]"
+              }`}
             >
               {tab}
             </button>
+
           ))}
+
         </div>
+
       </div>
 
-      {/* Content */}
-      <div className="transition-all duration-300">
-        {activeTab === "Sales Revenue" && <Metrics />}
-        {activeTab === "Orders" && <RecentOrders />}
-        {activeTab === "Payments" && (
-          <div className="text-white p-6 container mx-auto">
-            Payment Component Coming Soon
-          </div>
+      {/* CONTENT */}
+      <div className="container mx-auto px-6 mt-8 pb-10">
+
+        {activeTab ===
+          "Sales Revenue" && (
+          <Metrics />
         )}
+
+        {activeTab ===
+          "Orders" && (
+          <RecentOrders />
+        )}
+
+        {activeTab ===
+          "Payments" && (
+
+          <div className="bg-[#262626] p-8 rounded-2xl border border-[#333]">
+
+            <h1 className="text-2xl font-bold">
+              Payments
+            </h1>
+
+            <p className="text-gray-400 mt-2">
+              Coming Soon...
+            </p>
+
+          </div>
+
+        )}
+
       </div>
 
-      {/* Modal */}
+      {/* MODAL */}
       {modalType && (
-        <Modal type={modalType} setModalType={setModalType} />
+        <Modal
+          type={modalType}
+          setModalType={
+            setModalType
+          }
+        />
       )}
+
     </section>
   );
 };
