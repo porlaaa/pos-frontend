@@ -52,7 +52,7 @@ const Invoice = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      <div className="bg-white p-4 rounded-lg shadow-lg w-[400px]">
+      <div className="bg-white text-gray-900 p-4 rounded-lg shadow-lg w-[400px]">
 
         {/* Receipt */}
         <div ref={invoiceRef} className="p-4">
