@@ -120,7 +120,7 @@ const Invoice = ({
                     </span>
 
                     <span>
-                      ${total.toFixed(2)}
+                      ฿{total.toFixed(2)}
                     </span>
 
                   </li>
@@ -135,15 +135,15 @@ const Invoice = ({
           <div className="mt-4 border-t pt-4 text-sm">
             <p>
               <strong>Subtotal:</strong>{" "}
-              ${bills.total?.toFixed?.(2) || "0.00"}
+              ฿{bills.total?.toFixed?.(2) || "0.00"}
             </p>
             <p>
               <strong>Tax:</strong>{" "}
-              ${bills.tax?.toFixed?.(2) || "0.00"}
+              ฿{bills.tax?.toFixed?.(2) || "0.00"}
             </p>
             <p className="text-md font-semibold">
               <strong>Grand Total:</strong>{" "}
-              ${bills.totalWithTax?.toFixed?.(2) || "0.00"}
+              ฿{bills.totalWithTax?.toFixed?.(2) || "0.00"}
             </p>
           </div>
 

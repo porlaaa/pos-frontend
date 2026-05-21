@@ -130,7 +130,7 @@ const Metrics = () => {
               </p>
 
               <h1 className="text-4xl font-bold mt-2">
-                $
+                ฿
                 {totalRevenue.toLocaleString()}
               </h1>
 
