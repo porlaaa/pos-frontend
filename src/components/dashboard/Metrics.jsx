@@ -67,7 +67,7 @@ const Metrics = () => {
     filteredOrders.reduce(
       (sum, order) =>
         sum +
-        (order?.bills?.totalWithTax || 0),
+        (order?.bills?.total || 0),
       0
     );
 
