@@ -113,7 +113,7 @@ const ItemCard = ({ item }) => {
         ) : (
           <div className="flex-1">
             <h1 className="text-white font-semibold text-lg truncate">{item.name}</h1>
-            <p className="text-[#f6b100] font-bold">${item.price}</p>
+            <p className="text-[#f6b100] font-bold">฿{item.price}</p>
           </div>
         )}
       </div>

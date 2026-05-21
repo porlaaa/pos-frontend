@@ -42,7 +42,7 @@ const CartInfo = () => {
                   className="text-[#ababab] cursor-pointer hover:text-red-500" 
                   size={20} 
                 />
-                <p className="text-[#f5f5f5] text-md font-bold">${item.price}</p>
+                <p className="text-[#f5f5f5] text-md font-bold">฿{item.price}</p>
               </div>
             </div>
           ))

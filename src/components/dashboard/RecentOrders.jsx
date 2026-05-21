@@ -491,7 +491,7 @@ const RecentOrders = () => {
                   </td>
 
                   <td className="p-4">
-                    $
+                    ฿
                     {order.bills
                       ?.total ||
                       0}
