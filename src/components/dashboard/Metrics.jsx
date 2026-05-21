@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getOrders, getMenus, getItems, deleteMenu } from "../../https";
 import ItemCard from "./ItemCard";
@@ -10,6 +10,8 @@ const Metrics = () => {
   const queryClient = useQueryClient();
 
   // deleteCategoryMutation is now handled inside CategoryCard
+
+  const [timeFilter, setTimeFilter] = useState("All Time");
 
   // ===== ORDERS =====
   const { data: orderRes, isLoading: orderLoading } = useQuery({
@@ -38,14 +40,51 @@ const Metrics = () => {
     return <p className="text-white p-5">Loading...</p>;
   }
 
+  // ===== FILTERING LOGIC =====
+  const filterOrdersByTime = (ordersToFilter, filter) => {
+    if (filter === "All Time") return ordersToFilter;
+
+    const now = new Date();
+    
+    return ordersToFilter.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      if (isNaN(orderDate)) return true; // fallback if date is invalid or missing
+
+      if (filter === "Today") {
+        return (
+          orderDate.getDate() === now.getDate() &&
+          orderDate.getMonth() === now.getMonth() &&
+          orderDate.getFullYear() === now.getFullYear()
+        );
+      }
+
+      if (filter === "This Week") {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(now.getDate() - 7);
+        return orderDate >= oneWeekAgo;
+      }
+
+      if (filter === "This Month") {
+        return (
+          orderDate.getMonth() === now.getMonth() &&
+          orderDate.getFullYear() === now.getFullYear()
+        );
+      }
+
+      return true;
+    });
+  };
+
+  const filteredOrders = filterOrdersByTime(orders, timeFilter);
+
   // ===== 💰 TOTAL EARNINGS =====
-  const totalEarnings = orders.reduce(
+  const totalEarnings = filteredOrders.reduce(
     (sum, order) => sum + (order?.bills?.totalWithTax || 0),
     0
   );
 
   // ===== 🔄 IN PROGRESS =====
-  const inProgressCount = orders.filter(
+  const inProgressCount = filteredOrders.filter(
     (o) => o.orderStatus === "In Progress"
   ).length;
 
@@ -56,10 +95,22 @@ const Metrics = () => {
   return (
     <div className="container mx-auto py-2 px-6">
 
-      {/* HEADER */}
-      <h2 className="text-white text-xl font-semibold">
-        Overall Performance
-      </h2>
+      {/* HEADER & FILTER */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-white text-xl font-semibold">
+          Overall Performance
+        </h2>
+        <select
+          value={timeFilter}
+          onChange={(e) => setTimeFilter(e.target.value)}
+          className="bg-[#1a1a1a] text-white border border-[#333] p-2 rounded-lg outline-none cursor-pointer"
+        >
+          <option value="Today">Today</option>
+          <option value="This Week">This Week</option>
+          <option value="This Month">This Month</option>
+          <option value="All Time">All Time</option>
+        </select>
+      </div>
 
       {/* METRICS */}
       <div className="mt-6 grid grid-cols-4 gap-4">

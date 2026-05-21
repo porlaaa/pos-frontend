@@ -22,13 +22,7 @@ const Auth = () => {
         {/* Black Overlay */}
         <div className="absolute inset-0 bg-black bg-opacity-80"></div>
 
-        {/* Quote at bottom */}
-        <blockquote className="absolute bottom-10 px-8 mb-10 text-2xl italic text-white">
-          "Serve customers the best food with prompt and friendly service in a
-          welcoming atmosphere, and they’ll keep coming back."
-          <br />
-          <span className="block mt-4 text-yellow-400">- Founder of Restro</span>
-        </blockquote>
+
       </div>
 
       {/* Right Section */}
