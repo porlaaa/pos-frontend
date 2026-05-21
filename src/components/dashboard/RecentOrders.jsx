@@ -29,27 +29,6 @@ import {
   updateTable as updateCustomerTable,
 } from "../../redux/slices/customerSlice";
 
-// 🔔 sound helper
-const playSound = (
-  sound,
-  soundEnabled
-) => {
-
-  if (!soundEnabled) return;
-
-  const audio =
-    new Audio(sound);
-
-  audio.volume = 0.7;
-
-  audio.play().catch((err) => {
-    console.log(
-      "Sound blocked:",
-      err
-    );
-  });
-};
-
 const RecentOrders = () => {
 
   const dispatch =
@@ -62,43 +41,6 @@ const RecentOrders = () => {
   const prevOrderCount =
     useRef(0);
 
-  const prevReadyCount =
-    useRef(0);
-
-  // 🔔 sound enabled
-  const [
-    soundEnabled,
-    setSoundEnabled,
-  ] = useState(false);
-
-  // 🔔 unlock browser audio
-  const enableSound = () => {
-
-    const audio =
-      new Audio(
-        "/sounds/ding.mp3"
-      );
-
-    audio.volume = 0;
-
-    audio
-      .play()
-      .then(() => {
-
-        setSoundEnabled(true);
-
-        enqueueSnackbar(
-          "Notification sound enabled!",
-          {
-            variant:
-              "success",
-          }
-        );
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   const handleStatusChange = ({
     orderId,
@@ -110,18 +52,6 @@ const RecentOrders = () => {
       orderId,
       orderStatus,
     });
-
-    // 🔔 ready sound
-    if (
-      orderStatus ===
-      "Ready"
-    ) {
-
-      playSound(
-        "/sounds/ding.mp3",
-        soundEnabled
-      );
-    }
 
     // ✅ clear table
     if (
@@ -269,11 +199,6 @@ const RecentOrders = () => {
         prevOrderCount.current
     ) {
 
-      playSound(
-        "/sounds/ding.mp3",
-        soundEnabled
-      );
-
       enqueueSnackbar(
         "New Order Received!",
         {
@@ -288,37 +213,8 @@ const RecentOrders = () => {
 
   }, [
     orders,
-    soundEnabled,
   ]);
 
-  // 🔔 READY SOUND
-  useEffect(() => {
-
-    const readyOrders =
-      orders.filter(
-        (o) =>
-          o.orderStatus ===
-          "Ready"
-      );
-
-    if (
-      readyOrders.length >
-      prevReadyCount.current
-    ) {
-
-      playSound(
-        "/sounds/ding.mp3",
-        soundEnabled
-      );
-    }
-
-    prevReadyCount.current =
-      readyOrders.length;
-
-  }, [
-    orders,
-    soundEnabled,
-  ]);
 
   if (isLoading) {
 
@@ -331,18 +227,6 @@ const RecentOrders = () => {
 
   return (
     <div className="container mx-auto bg-[#262626] p-4 rounded-lg">
-
-      {/* 🔔 ENABLE SOUND */}
-      {!soundEnabled && (
-        <button
-          onClick={
-            enableSound
-          }
-          className="mb-4 bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white font-semibold"
-        >
-          🔔 Enable Notification Sound
-        </button>
-      )}
 
       <h2 className="text-[#f5f5f5] text-xl font-semibold mb-4">
         Recent Orders
