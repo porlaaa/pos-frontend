@@ -82,7 +82,7 @@ const Metrics = () => {
 
   // ===== ✅ COMPLETED =====
   const completedOrders =
-    orders.filter(
+    filteredOrders.filter(
       (o) =>
         o.orderStatus ===
         "Completed"
