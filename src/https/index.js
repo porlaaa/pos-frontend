@@ -9,6 +9,7 @@ export const logout = () => axiosWrapper.post("/api/user/logout");
 // ===== TABLE =====
 export const addTable = (data) => axiosWrapper.post("/api/table/", data);
 export const getTables = () => axiosWrapper.get("/api/table");
+export const deleteTable = (tableId) => axiosWrapper.delete(`/api/table/${tableId}`);
 
 // ✅ แก้ไข: ป้องกันปัญหา tableId หลุดไปเป็น Object [object Object]
 export const updateTable = ({ tableId, ...tableData }) => {
