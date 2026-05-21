@@ -41,7 +41,7 @@ const TableCard = ({ id, name, status, initials, seats }) => {
       </div>
 
       <p className="text-center text-[#f6b100] text-sm font-semibold mt-2">
-        👥 {seats || 4} Seats
+         {seats || 4} Seats
       </p>
 
     </div>
