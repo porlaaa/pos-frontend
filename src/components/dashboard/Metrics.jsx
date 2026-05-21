@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getOrders, getMenus, getItems, deleteMenu } from "../../https";
 import { FaMoneyBillWave, FaClipboardList, FaCheckCircle } from "react-icons/fa";
-import ItemCard from "./ItemCard";
 import CategoryCard from "./CategoryCard";
+import ItemCard from "./ItemCard";
+import { filterOrdersByTime } from "../../utils";
 
 const Metrics = () => {
 
@@ -58,41 +59,6 @@ const Metrics = () => {
       </p>
     );
   }
-
-  // ===== FILTERING LOGIC =====
-  const filterOrdersByTime = (ordersToFilter, filter) => {
-    if (filter === "All Time") return ordersToFilter;
-
-    const now = new Date();
-    
-    return ordersToFilter.filter((order) => {
-      const orderDate = new Date(order.createdAt);
-      if (isNaN(orderDate)) return true; // fallback if date is invalid or missing
-
-      if (filter === "Today") {
-        return (
-          orderDate.getDate() === now.getDate() &&
-          orderDate.getMonth() === now.getMonth() &&
-          orderDate.getFullYear() === now.getFullYear()
-        );
-      }
-
-      if (filter === "This Week") {
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(now.getDate() - 7);
-        return orderDate >= oneWeekAgo;
-      }
-
-      if (filter === "This Month") {
-        return (
-          orderDate.getMonth() === now.getMonth() &&
-          orderDate.getFullYear() === now.getFullYear()
-        );
-      }
-
-      return true;
-    });
-  };
 
   const filteredOrders = filterOrdersByTime(orders, timeFilter);
 

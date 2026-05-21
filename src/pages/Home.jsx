@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Greetings from "../components/home/Greetings";
 import { BsCashCoin } from "react-icons/bs";
 import { GrInProgress } from "react-icons/gr";
@@ -7,8 +7,11 @@ import RecentOrders from "../components/home/RecentOrders";
 import PopularDishes from "../components/home/PopularDishes";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "../https";
+import { filterOrdersByTime } from "../utils";
 
 const Home = () => {
+
+  const [timeFilter, setTimeFilter] = useState("All Time");
 
   useEffect(() => {
     document.title = "POS | Home";
@@ -22,13 +25,15 @@ const Home = () => {
 
   const orders = data?.data?.data || [];
 
+  const filteredOrders = filterOrdersByTime(orders, timeFilter);
+
   // 🔥 คำนวณจริง
-  const totalEarnings = orders.reduce(
+  const totalEarnings = filteredOrders.reduce(
     (sum, order) => sum + (order?.bills?.totalWithTax || 0),
     0
   );
 
-  const inProgressCount = orders.filter(
+  const inProgressCount = filteredOrders.filter(
     (order) => order.orderStatus === "In Progress"
   ).length;
 
@@ -43,7 +48,20 @@ const Home = () => {
       <div className="flex-[3]">
         <Greetings />
 
-        <div className="flex flex-col sm:flex-row items-center w-full gap-3 px-8 mt-8">
+        <div className="flex justify-end px-8 mt-6">
+          <select
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
+          >
+            <option value="Today">Today</option>
+            <option value="This Week">This Week</option>
+            <option value="This Month">This Month</option>
+            <option value="All Time">All Time</option>
+          </select>
+        </div>
+
+        <div className="flex flex-col sm:flex-row items-center w-full gap-3 px-8 mt-3">
 
           <MiniCard
             title="Total Earnings"

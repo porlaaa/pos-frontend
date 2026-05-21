@@ -60,3 +60,37 @@ export const formatDateAndTime = (date) => {
 
   return dateAndTime;
 }
+
+export const filterOrdersByTime = (ordersToFilter, filter) => {
+  if (filter === "All Time") return ordersToFilter;
+
+  const now = new Date();
+  
+  return ordersToFilter.filter((order) => {
+    const orderDate = new Date(order.createdAt);
+    if (isNaN(orderDate)) return true; // fallback if date is invalid or missing
+
+    if (filter === "Today") {
+      return (
+        orderDate.getDate() === now.getDate() &&
+        orderDate.getMonth() === now.getMonth() &&
+        orderDate.getFullYear() === now.getFullYear()
+      );
+    }
+
+    if (filter === "This Week") {
+      const oneWeekAgo = new Date();
+      oneWeekAgo.setDate(now.getDate() - 7);
+      return orderDate >= oneWeekAgo;
+    }
+
+    if (filter === "This Month") {
+      return (
+        orderDate.getMonth() === now.getMonth() &&
+        orderDate.getFullYear() === now.getFullYear()
+      );
+    }
+
+    return true;
+  });
+};

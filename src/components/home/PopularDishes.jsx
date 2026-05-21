@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getItems, getOrders } from "../../https";
+import { filterOrdersByTime } from "../../utils";
 
 const PopularDishes = () => {
+  const [timeFilter, setTimeFilter] = useState("All Time");
 
   const { data: itemRes } = useQuery({
     queryKey: ["items"],
@@ -17,10 +19,12 @@ const PopularDishes = () => {
   const items = itemRes?.data?.data || [];
   const orders = orderRes?.data?.data || [];
 
+  const filteredOrders = filterOrdersByTime(orders, timeFilter);
+
   // 🔥 count orders per item
   const itemCountMap = {};
 
-  orders.forEach(order => {
+  filteredOrders.forEach(order => {
     order.items?.forEach(i => {
       // Fallback to name matching for older orders that don't have itemId
       const targetId = i.itemId || items.find(dish => dish.name === i.name)?._id;
@@ -51,6 +55,16 @@ const PopularDishes = () => {
           <h1 className="text-[#f5f5f5] text-lg font-semibold">
             Popular Dishes
           </h1>
+          <select
+            value={timeFilter}
+            onChange={(e) => setTimeFilter(e.target.value)}
+            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
+          >
+            <option value="Today">Today</option>
+            <option value="This Week">This Week</option>
+            <option value="This Month">This Month</option>
+            <option value="All Time">All Time</option>
+          </select>
         </div>
 
         <div className="overflow-y-scroll flex-1 pb-4 scrollbar-hide">
