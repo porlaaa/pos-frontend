@@ -48,13 +48,23 @@ const customerSlice = createSlice({
 
     updateTable: (state, action) => {
 
-      state.table = action.payload.table;
-
-      if (action.payload.orderId) {
-        state.orderId = action.payload.orderId;
+      if (
+        action.payload.table !== undefined
+      ) {
+        state.table =
+          action.payload.table;
       }
 
-      if (action.payload.customerName) {
+      if (
+        action.payload.orderId !== undefined
+      ) {
+        state.orderId =
+          action.payload.orderId;
+      }
+
+      if (
+        action.payload.customerName !== undefined
+      ) {
         state.customerName =
           action.payload.customerName;
       }

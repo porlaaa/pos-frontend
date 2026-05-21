@@ -1,21 +1,104 @@
-import React from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+
 import {
   keepPreviousData,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+
 import { enqueueSnackbar } from "notistack";
+
 import {
   getOrders,
   updateOrderStatus,
   updateTable,
 } from "../../https/index";
+
 import { formatDateAndTime } from "../../utils";
+
+import {
+  useDispatch,
+} from "react-redux";
+
+import {
+  updateTable as updateCustomerTable,
+} from "../../redux/slices/customerSlice";
+
+// 🔔 sound helper
+const playSound = (
+  sound,
+  soundEnabled
+) => {
+
+  if (!soundEnabled) return;
+
+  const audio =
+    new Audio(sound);
+
+  audio.volume = 0.7;
+
+  audio.play().catch((err) => {
+    console.log(
+      "Sound blocked:",
+      err
+    );
+  });
+};
 
 const RecentOrders = () => {
 
-  const queryClient = useQueryClient();
+  const dispatch =
+    useDispatch();
+
+  const queryClient =
+    useQueryClient();
+
+  // 🔔 refs
+  const prevOrderCount =
+    useRef(0);
+
+  const prevReadyCount =
+    useRef(0);
+
+  // 🔔 sound enabled
+  const [
+    soundEnabled,
+    setSoundEnabled,
+  ] = useState(false);
+
+  // 🔔 unlock browser audio
+  const enableSound = () => {
+
+    const audio =
+      new Audio(
+        "/sounds/ding.mp3"
+      );
+
+    audio.volume = 0;
+
+    audio
+      .play()
+      .then(() => {
+
+        setSoundEnabled(true);
+
+        enqueueSnackbar(
+          "Notification sound enabled!",
+          {
+            variant:
+              "success",
+          }
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleStatusChange = ({
     orderId,
@@ -28,31 +111,65 @@ const RecentOrders = () => {
       orderStatus,
     });
 
-    // ✅ clear table เมื่อ completed
+    // 🔔 ready sound
     if (
-      orderStatus === "Completed" &&
+      orderStatus ===
+      "Ready"
+    ) {
+
+      playSound(
+        "/sounds/ding.mp3",
+        soundEnabled
+      );
+    }
+
+    // ✅ clear table
+    if (
+      orderStatus ===
+        "Completed" &&
       tableId
     ) {
 
       tableUpdateMutation.mutate({
         tableId,
-        status: "available",
-        currentOrder: null,
+        status:
+          "available",
+
+        currentOrder:
+          null,
       });
+
+      // ✅ clear redux
+      dispatch(
+        updateCustomerTable({
+          table: "",
+          orderId: "",
+          customerName:
+            "",
+        })
+      );
     }
   };
 
   // ✅ update table
-  const tableUpdateMutation = useMutation({
-    mutationFn: (reqData) =>
-      updateTable(reqData),
+  const tableUpdateMutation =
+    useMutation({
+      mutationFn: (
+        reqData
+      ) =>
+        updateTable(
+          reqData
+        ),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries([
-        "tables",
-      ]);
-    },
-  });
+      onSuccess: () => {
+
+        queryClient.invalidateQueries(
+          [
+            "tables",
+          ]
+        );
+      },
+    });
 
   // ✅ update order status
   const orderStatusUpdateMutation =
@@ -71,13 +188,16 @@ const RecentOrders = () => {
         enqueueSnackbar(
           "Order status updated successfully!",
           {
-            variant: "success",
+            variant:
+              "success",
           }
         );
 
-        queryClient.invalidateQueries([
-          "orders",
-        ]);
+        queryClient.invalidateQueries(
+          [
+            "orders",
+          ]
+        );
       },
 
       onError: () => {
@@ -85,7 +205,8 @@ const RecentOrders = () => {
         enqueueSnackbar(
           "Failed to update order status!",
           {
-            variant: "error",
+            variant:
+              "error",
           }
         );
       },
@@ -97,13 +218,20 @@ const RecentOrders = () => {
     isError,
     isLoading,
   } = useQuery({
-    queryKey: ["orders"],
+    queryKey: [
+      "orders",
+    ],
 
-    queryFn: async () =>
-      await getOrders(),
+    queryFn:
+      async () =>
+        await getOrders(),
 
     placeholderData:
       keepPreviousData,
+
+    // 🔥 realtime refresh
+    refetchInterval:
+      3000,
   });
 
   if (isError) {
@@ -111,18 +239,86 @@ const RecentOrders = () => {
     enqueueSnackbar(
       "Something went wrong!",
       {
-        variant: "error",
+        variant:
+          "error",
       }
     );
   }
 
-  // ✅ filter completed
+  // ✅ orders
   const orders =
-    (resData?.data?.data || []).filter(
+    (
+      resData?.data
+        ?.data || []
+    ).filter(
       (order) =>
         order.orderStatus?.trim() !==
         "Completed"
     );
+
+  // 🔔 NEW ORDER SOUND
+  useEffect(() => {
+
+    if (!orders)
+      return;
+
+    if (
+      prevOrderCount.current !==
+        0 &&
+      orders.length >
+        prevOrderCount.current
+    ) {
+
+      playSound(
+        "/sounds/ding.mp3",
+        soundEnabled
+      );
+
+      enqueueSnackbar(
+        "New Order Received!",
+        {
+          variant:
+            "info",
+        }
+      );
+    }
+
+    prevOrderCount.current =
+      orders.length;
+
+  }, [
+    orders,
+    soundEnabled,
+  ]);
+
+  // 🔔 READY SOUND
+  useEffect(() => {
+
+    const readyOrders =
+      orders.filter(
+        (o) =>
+          o.orderStatus ===
+          "Ready"
+      );
+
+    if (
+      readyOrders.length >
+      prevReadyCount.current
+    ) {
+
+      playSound(
+        "/sounds/ding.mp3",
+        soundEnabled
+      );
+    }
+
+    prevReadyCount.current =
+      readyOrders.length;
+
+  }, [
+    orders,
+    soundEnabled,
+  ]);
 
   if (isLoading) {
 
@@ -135,6 +331,18 @@ const RecentOrders = () => {
 
   return (
     <div className="container mx-auto bg-[#262626] p-4 rounded-lg">
+
+      {/* 🔔 ENABLE SOUND */}
+      {!soundEnabled && (
+        <button
+          onClick={
+            enableSound
+          }
+          className="mb-4 bg-green-500 hover:bg-green-600 px-4 py-2 rounded-lg text-white font-semibold"
+        >
+          🔔 Enable Notification Sound
+        </button>
+      )}
 
       <h2 className="text-[#f5f5f5] text-xl font-semibold mb-4">
         Recent Orders
@@ -184,106 +392,126 @@ const RecentOrders = () => {
 
           <tbody>
 
-            {orders.map((order, index) => (
+            {orders.map(
+              (
+                order,
+                index
+              ) => (
 
-              <tr
-                key={index}
-                className="border-b border-gray-600 hover:bg-[#333]"
-              >
+                <tr
+                  key={index}
+                  className="border-b border-gray-600 hover:bg-[#333]"
+                >
 
-                <td className="p-4">
-                  #{order._id.slice(-6)}
-                </td>
+                  <td className="p-4">
+                    #
+                    {order._id.slice(
+                      -6
+                    )}
+                  </td>
 
-                <td className="p-4">
-                  {order.customerDetails?.name ||
-                    "-"}
-                </td>
+                  <td className="p-4">
+                    {order
+                      .customerDetails
+                      ?.name ||
+                      "-"}
+                  </td>
 
-                <td className="p-4">
+                  <td className="p-4">
 
-                  <select
-                    className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${
-                      order.orderStatus ===
-                      "Ready"
-                        ? "text-green-500"
-                        : order.orderStatus ===
-                          "Completed"
-                        ? "text-blue-500"
-                        : "text-yellow-500"
-                    }`}
-                    value={
-                      order.orderStatus
-                    }
-                    onChange={(e) =>
-                      handleStatusChange({
-                        orderId:
-                          order._id,
+                    <select
+                      className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${
+                        order.orderStatus ===
+                        "Ready"
+                          ? "text-green-500"
+                          : order.orderStatus ===
+                            "Completed"
+                          ? "text-blue-500"
+                          : "text-yellow-500"
+                      }`}
+                      value={
+                        order.orderStatus
+                      }
+                      onChange={(
+                        e
+                      ) =>
+                        handleStatusChange(
+                          {
+                            orderId:
+                              order._id,
 
-                        orderStatus:
-                          e.target.value,
+                            orderStatus:
+                              e
+                                .target
+                                .value,
 
-                        // ✅ table เป็นเลขตรงๆ
-                        tableId:
-                          order.table,
-                      })
-                    }
-                  >
+                            tableId:
+                              order.table,
+                          }
+                        )
+                      }
+                    >
 
-                    <option value="In Progress">
-                      In Progress
-                    </option>
+                      <option value="In Progress">
+                        In Progress
+                      </option>
 
-                    <option value="Ready">
-                      Ready
-                    </option>
+                      <option value="Ready">
+                        Ready
+                      </option>
 
-                    <option value="Completed">
-                      Completed
-                    </option>
+                      <option value="Completed">
+                        Completed
+                      </option>
 
-                  </select>
+                    </select>
 
-                </td>
+                  </td>
 
-                <td className="p-4">
-                  {formatDateAndTime(
-                    order.createdAt
-                  )}
-                </td>
+                  <td className="p-4">
+                    {formatDateAndTime(
+                      order.createdAt
+                    )}
+                  </td>
 
-                <td className="p-4">
-                  {(order.items || [])
-                    .length}{" "}
-                  Items
-                </td>
+                  <td className="p-4">
+                    {
+                      (
+                        order.items ||
+                        []
+                      ).length
+                    }{" "}
+                    Items
+                  </td>
 
-                {/* ✅ FIX โต๊ะ */}
-                <td className="p-4">
-                  Table -{" "}
-                  {order.table || "-"}
-                </td>
+                  <td className="p-4">
+                    Table -{" "}
+                    {order.table ||
+                      "-"}
+                  </td>
 
-                <td className="p-4">
-                  $
-                  {order.bills
-                    ?.totalWithTax || 0}
-                </td>
+                  <td className="p-4">
+                    $
+                    {order.bills
+                      ?.total ||
+                      0}
+                  </td>
 
-                <td className="p-4">
-                  {order.paymentMethod ||
-                    "Cash"}
-                </td>
+                  <td className="p-4">
+                    {order.paymentMethod ||
+                      "Cash"}
+                  </td>
 
-              </tr>
-            ))}
+                </tr>
+              )
+            )}
 
           </tbody>
 
         </table>
 
       </div>
-            
+
     </div>
   );
 };

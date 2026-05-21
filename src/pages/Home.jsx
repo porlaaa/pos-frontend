@@ -24,7 +24,7 @@ const Home = () => {
 
   // 🔥 คำนวณจริง
   const totalEarnings = orders.reduce(
-    (sum, order) => sum + (order?.bills?.totalWithTax || 0),
+    (sum, order) => sum + (order?.bills?.total|| 0),
     0
   );
 
