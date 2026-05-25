@@ -5,10 +5,12 @@ import { FaMoneyBillWave, FaClipboardList, FaCheckCircle } from "react-icons/fa"
 import CategoryCard from "./CategoryCard";
 import ItemCard from "./ItemCard";
 import { filterOrdersByTime } from "../../utils";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const Metrics = () => {
 
-  const [timeFilter, setTimeFilter] = useState("All Time");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   // ===== ORDERS =====
   const {
@@ -60,7 +62,7 @@ const Metrics = () => {
     );
   }
 
-  const filteredOrders = filterOrdersByTime(orders, timeFilter);
+  const filteredOrders = filterOrdersByTime(orders, startDate, endDate);
 
   // ===== 💰 TOTAL REVENUE =====
   const totalRevenue =
@@ -95,6 +97,27 @@ const Metrics = () => {
   const totalDishes =
     items.length;
 
+  // ===== 📈 CHART DATA =====
+  const chartDataMap = {};
+
+  filteredOrders.forEach((order) => {
+    const orderDate = new Date(order.createdAt);
+    const dateStr = orderDate.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+    const sortKey = orderDate.toISOString().split("T")[0]; // YYYY-MM-DD
+    
+    if (!chartDataMap[dateStr]) {
+      chartDataMap[dateStr] = { date: dateStr, sortKey, revenue: 0, orders: 0 };
+    }
+    
+    chartDataMap[dateStr].revenue += (order?.bills?.total || 0);
+    chartDataMap[dateStr].orders += 1;
+  });
+
+  const chartData = Object.values(chartDataMap).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+
   return (
     <div className="container mx-auto py-2 px-6">
 
@@ -103,16 +126,21 @@ const Metrics = () => {
         <h2 className="text-white text-2xl font-bold">
           Overall Performance
         </h2>
-        <select
-          value={timeFilter}
-          onChange={(e) => setTimeFilter(e.target.value)}
-          className="bg-[#1a1a1a] text-white border border-[#333] p-2 rounded-lg outline-none cursor-pointer"
-        >
-          <option value="Today">Today</option>
-          <option value="This Week">This Week</option>
-          <option value="This Month">This Month</option>
-          <option value="All Time">All Time</option>
-        </select>
+        <div className="flex items-center gap-3">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
+          />
+          <span className="text-[#f5f5f5] text-sm">to</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
+          />
+        </div>
       </div>
 
       {/* STATS */}
@@ -136,7 +164,7 @@ const Metrics = () => {
 
             </div>
 
-            <div className="bg-green-500 p-4 rounded-xl text-2xl">
+            <div className="text-green-500 text-4xl">
               <FaMoneyBillWave />
             </div>
 
@@ -161,7 +189,7 @@ const Metrics = () => {
 
             </div>
 
-            <div className="bg-yellow-500 p-4 rounded-xl text-2xl">
+            <div className="text-yellow-500 text-4xl">
               <FaClipboardList />
             </div>
 
@@ -186,7 +214,7 @@ const Metrics = () => {
 
             </div>
 
-            <div className="bg-blue-500 p-4 rounded-xl text-2xl">
+            <div className="text-blue-500 text-4xl">
               <FaCheckCircle />
             </div>
 
@@ -223,6 +251,49 @@ const Metrics = () => {
 
         </div>
 
+      </div>
+
+      {/* REVENUE CHART */}
+      <div className="mt-6 bg-[#262626] p-6 rounded-2xl border border-[#333]">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-white text-xl font-bold">Revenue & Orders Overview</h2>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#02ca3a]"></div>
+              <span className="text-gray-300">Revenue (฿)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-[#f6b100]"></div>
+              <span className="text-gray-300">Orders</span>
+            </div>
+          </div>
+        </div>
+        <div className="h-[350px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <defs>
+                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#02ca3a" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#02ca3a" stopOpacity={0}/>
+                </linearGradient>
+                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#f6b100" stopOpacity={0.8}/>
+                  <stop offset="95%" stopColor="#f6b100" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
+              <YAxis yAxisId="left" stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `฿${value}`} />
+              <YAxis yAxisId="right" orientation="right" stroke="#ababab" tick={{ fill: "#ababab" }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+              <Tooltip
+                contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", borderRadius: "8px", color: "#fff" }}
+                itemStyle={{ color: "#fff" }}
+              />
+              <Area yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (฿)" stroke="#02ca3a" fillOpacity={1} fill="url(#colorRevenue)" />
+              <Area yAxisId="right" type="monotone" dataKey="orders" name="Orders" stroke="#f6b100" fillOpacity={1} fill="url(#colorOrders)" />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* MENU + ITEMS */}

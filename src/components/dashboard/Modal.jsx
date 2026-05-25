@@ -72,7 +72,7 @@ const Modal = ({ type, setModalType }) => {
       enqueueSnackbar("Dish added!", { variant: "success" });
       setModalType(null);
 
-      // 🔥 สำคัญ: refresh items
+      // สำคัญ: refresh items
       queryClient.invalidateQueries(["items"]);
     },
 
@@ -108,7 +108,7 @@ const Modal = ({ type, setModalType }) => {
       });
     }
 
-    // DISH (🔥 FIX ใหม่)
+    // DISH ( FIX ใหม่)
     if (type === "dishes") {
       if (!dishData.menuId) {
         return enqueueSnackbar("Select category first", {

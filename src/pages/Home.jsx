@@ -23,8 +23,8 @@ import { filterOrdersByTime } from "../utils";
 
 const Home = () => {
 
-  const [timeFilter, setTimeFilter] =
-    useState("All Time");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   useEffect(() => {
 
@@ -50,7 +50,8 @@ const Home = () => {
   const filteredOrders =
     filterOrdersByTime(
       orders,
-      timeFilter
+      startDate,
+      endDate
     );
 
   // ===== CURRENT TOTAL =====
@@ -75,117 +76,31 @@ const Home = () => {
 
   let previousOrders = [];
 
-  // ===== TODAY =====
-  if (timeFilter === "Today") {
+  let compareLabel = "";
+  if (startDate) {
+    const start = new Date(startDate);
+    start.setHours(0, 0, 0, 0);
 
-    const yesterday =
-      new Date();
+    const end = endDate ? new Date(endDate) : new Date();
+    end.setHours(23, 59, 59, 999);
 
-    yesterday.setDate(
-      yesterday.getDate() - 1
-    );
+    const durationMs = end - start;
+    const durationDays = Math.ceil(durationMs / (1000 * 60 * 60 * 24));
 
-    previousOrders =
-      orders.filter((order) => {
+    const previousEnd = new Date(start);
+    previousEnd.setDate(previousEnd.getDate() - 1);
+    previousEnd.setHours(23, 59, 59, 999);
 
-        const orderDate =
-          new Date(
-            order.createdAt
-          );
+    const previousStart = new Date(previousEnd);
+    previousStart.setDate(previousStart.getDate() - durationDays + 1);
+    previousStart.setHours(0, 0, 0, 0);
 
-        return (
-          orderDate.toDateString() ===
-          yesterday.toDateString()
-        );
-      });
-  }
+    compareLabel = `than previous ${durationDays} day(s)`;
 
-  // ===== THIS WEEK =====
-  else if (
-    timeFilter ===
-    "This Week"
-  ) {
-
-    const currentWeekStart =
-      new Date();
-
-    currentWeekStart.setDate(
-      now.getDate() -
-      now.getDay()
-    );
-
-    const previousWeekStart =
-      new Date(
-        currentWeekStart
-      );
-
-    previousWeekStart.setDate(
-      previousWeekStart.getDate() -
-      7
-    );
-
-    const previousWeekEnd =
-      new Date(
-        currentWeekStart
-      );
-
-    previousWeekEnd.setDate(
-      previousWeekEnd.getDate() -
-      1
-    );
-
-    previousOrders =
-      orders.filter((order) => {
-
-        const orderDate =
-          new Date(
-            order.createdAt
-          );
-
-        return (
-          orderDate >=
-          previousWeekStart &&
-          orderDate <=
-          previousWeekEnd
-        );
-      });
-  }
-
-  // ===== THIS MONTH =====
-  else if (
-    timeFilter ===
-    "This Month"
-  ) {
-
-    const previousMonth =
-      new Date(
-        now.getFullYear(),
-        now.getMonth() - 1,
-        1
-      );
-
-    const previousMonthEnd =
-      new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        0
-      );
-
-    previousOrders =
-      orders.filter((order) => {
-
-        const orderDate =
-          new Date(
-            order.createdAt
-          );
-
-        return (
-          orderDate >=
-          previousMonth &&
-          orderDate <=
-          previousMonthEnd
-        );
-      });
+    previousOrders = orders.filter((order) => {
+      const orderDate = new Date(order.createdAt);
+      return orderDate >= previousStart && orderDate <= previousEnd;
+    });
   }
 
   // ===== PREVIOUS TOTAL =====
@@ -211,27 +126,7 @@ const Home = () => {
       ).toFixed(1);
   }
 
-  // ===== LABEL =====
-  let compareLabel =
-    "than yesterday";
 
-  if (
-    timeFilter ===
-    "This Week"
-  ) {
-
-    compareLabel =
-      "than last week";
-  }
-
-  if (
-    timeFilter ===
-    "This Month"
-  ) {
-
-    compareLabel =
-      "than last month";
-  }
 
   if (isLoading) {
 
@@ -251,36 +146,20 @@ const Home = () => {
         <Greetings />
 
         {/* FILTER */}
-        <div className="flex justify-end px-8 mt-6">
-
-          <select
-            value={timeFilter}
-            onChange={(e) =>
-              setTimeFilter(
-                e.target.value
-              )
-            }
+        <div className="flex justify-end items-center px-8 mt-6 gap-3">
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
-          >
-
-            <option value="Today">
-              Today
-            </option>
-
-            <option value="This Week">
-              This Week
-            </option>
-
-            <option value="This Month">
-              This Month
-            </option>
-
-            <option value="All Time">
-              All Time
-            </option>
-
-          </select>
-
+          />
+          <span className="text-[#f5f5f5] text-sm">to</span>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
+          />
         </div>
 
         {/* CARDS */}

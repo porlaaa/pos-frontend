@@ -18,7 +18,7 @@ const cartSlice = createSlice({
         });
       }
     },
-    // ✅ เพิ่มสำหรับอัปเดตรายการอาหารทั้งหมดจาก Database
+    // เพิ่มสำหรับอัปเดตรายการอาหารทั้งหมดจาก Database
     setItems: (state, action) => {
       return action.payload; 
     },

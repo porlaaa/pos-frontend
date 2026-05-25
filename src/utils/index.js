@@ -61,34 +61,31 @@ export const formatDateAndTime = (date) => {
   return dateAndTime;
 }
 
-export const filterOrdersByTime = (ordersToFilter, filter) => {
-  if (filter === "All Time") return ordersToFilter;
+export const filterOrdersByTime = (ordersToFilter, startDate, endDate) => {
+  if (!startDate && !endDate) return ordersToFilter;
 
-  const now = new Date();
-  
   return ordersToFilter.filter((order) => {
     const orderDate = new Date(order.createdAt);
     if (isNaN(orderDate)) return true; // fallback if date is invalid or missing
 
-    if (filter === "Today") {
-      return (
-        orderDate.getDate() === now.getDate() &&
-        orderDate.getMonth() === now.getMonth() &&
-        orderDate.getFullYear() === now.getFullYear()
-      );
+    const start = startDate ? new Date(startDate) : null;
+    const end = endDate ? new Date(endDate) : null;
+    
+    // Set start to beginning of day
+    if (start) {
+      start.setHours(0, 0, 0, 0);
+    }
+    // Set end to end of day
+    if (end) {
+      end.setHours(23, 59, 59, 999);
     }
 
-    if (filter === "This Week") {
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(now.getDate() - 7);
-      return orderDate >= oneWeekAgo;
-    }
-
-    if (filter === "This Month") {
-      return (
-        orderDate.getMonth() === now.getMonth() &&
-        orderDate.getFullYear() === now.getFullYear()
-      );
+    if (start && end) {
+      return orderDate >= start && orderDate <= end;
+    } else if (start) {
+      return orderDate >= start;
+    } else if (end) {
+      return orderDate <= end;
     }
 
     return true;

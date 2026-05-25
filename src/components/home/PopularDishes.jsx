@@ -4,7 +4,8 @@ import { getItems, getOrders } from "../../https";
 import { filterOrdersByTime } from "../../utils";
 
 const PopularDishes = () => {
-  const [timeFilter, setTimeFilter] = useState("All Time");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const { data: itemRes } = useQuery({
     queryKey: ["items"],
@@ -19,7 +20,7 @@ const PopularDishes = () => {
   const items = itemRes?.data?.data || [];
   const orders = orderRes?.data?.data || [];
 
-  const filteredOrders = filterOrdersByTime(orders, timeFilter);
+  const filteredOrders = filterOrdersByTime(orders, startDate, endDate);
 
   // 🔥 count orders per item
   const itemCountMap = {};
@@ -55,16 +56,21 @@ const PopularDishes = () => {
           <h1 className="text-[#f5f5f5] text-lg font-semibold">
             Popular Dishes
           </h1>
-          <select
-            value={timeFilter}
-            onChange={(e) => setTimeFilter(e.target.value)}
-            className="bg-[#1a1a1a] text-white border border-[#333] px-3 py-1.5 rounded-lg outline-none cursor-pointer text-sm"
-          >
-            <option value="Today">Today</option>
-            <option value="This Week">This Week</option>
-            <option value="This Month">This Month</option>
-            <option value="All Time">All Time</option>
-          </select>
+          <div className="flex items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="bg-[#1a1a1a] text-white border border-[#333] px-2 py-1 rounded outline-none cursor-pointer text-xs"
+            />
+            <span className="text-[#f5f5f5] text-xs">to</span>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="bg-[#1a1a1a] text-white border border-[#333] px-2 py-1 rounded outline-none cursor-pointer text-xs"
+            />
+          </div>
         </div>
 
         <div className="overflow-y-scroll flex-1 pb-4 scrollbar-hide">

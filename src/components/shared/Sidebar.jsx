@@ -57,7 +57,7 @@ const Sidebar = () => {
   const tables =
     tablesData?.data?.data || [];
 
-  // ✅ ใช้ booked ตัวเล็กให้ตรง backend
+  // ใช้ booked ตัวเล็กให้ตรง backend
   const availableTables = tables.filter(
     (t) => t.status !== "Booked"
   );
@@ -93,7 +93,7 @@ const Sidebar = () => {
 
     dispatch(removeAllItems());
 
-    // ✅ เก็บ customer + table ใน redux
+    // เก็บ customer + table ใน redux
     dispatch(
       setCustomer({
         name,
@@ -108,14 +108,14 @@ const Sidebar = () => {
 
     setIsModalOpen(false);
 
-    // ✅ มีโต๊ะ → ไป menu
+    // มีโต๊ะ → ไป menu
     if (selectedTable) {
 
       navigate("/menu");
 
     } else {
 
-      // ✅ ไม่มีโต๊ะ → ไป tables
+      // ไม่มีโต๊ะ → ไป tables
       navigate("/tables");
     }
   };
