@@ -145,19 +145,19 @@ const Bill = () => {
           Items({cartData.length})
         </p>
         <h1 className="text-[#f5f5f5] text-md font-bold">
-          ฿{total.toFixed(2)}
+          {total.toFixed(2)} ฿
         </h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-[#ababab] font-medium mt-2">Tax(5.25%)</p>
-        <h1 className="text-[#f5f5f5] text-md font-bold">฿{tax.toFixed(2)}</h1>
+        <h1 className="text-[#f5f5f5] text-md font-bold">{tax.toFixed(2)} ฿</h1>
       </div>
       <div className="flex items-center justify-between px-5 mt-2">
         <p className="text-xs text-[#ababab] font-medium mt-2">
           Total With Tax
         </p>
         <h1 className="text-[#f5f5f5] text-md font-bold">
-          ฿{totalPriceWithTax.toFixed(2)}
+          {totalPriceWithTax.toFixed(2)} ฿
         </h1>
       </div>
       <div className="flex items-center gap-3 px-5 mt-4">
@@ -199,10 +199,10 @@ const Bill = () => {
 
       {showQRModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-          <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#333] flex flex-col items-center max-w-sm w-full mx-4">
+          <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#333] flex flex-col items-center max-w-md w-full mx-4">
             <h2 className="text-white text-xl font-bold mb-4">Scan QR Code to Pay</h2>
             <div className="bg-white p-2 rounded-xl mb-6">
-              <img src={qrCodeImg} alt="QR Code" className="w-48 h-48 object-cover" />
+              <img src={qrCodeImg} alt="QR Code" className="w-72 h-72 object-cover" />
             </div>
             <div className="flex gap-4 w-full">
               <button

@@ -158,8 +158,7 @@ const Metrics = () => {
               </p>
 
               <h1 className="text-4xl font-bold mt-2">
-                ฿
-                {totalRevenue.toLocaleString()}
+                {totalRevenue.toLocaleString()} ฿
               </h1>
 
             </div>
@@ -282,7 +281,7 @@ const Metrics = () => {
                 </linearGradient>
               </defs>
               <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
-              <YAxis yAxisId="left" stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `฿${value}`} />
+              <YAxis yAxisId="left" stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `${value} ฿`} />
               <YAxis yAxisId="right" orientation="right" stroke="#ababab" tick={{ fill: "#ababab" }} />
               <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
               <Tooltip

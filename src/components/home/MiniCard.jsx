@@ -36,7 +36,7 @@ const MiniCard = ({
 
           {title ===
           "Total Earnings"
-            ? `฿${number}`
+            ? `${number} ฿`
             : number}
 
         </h1>
