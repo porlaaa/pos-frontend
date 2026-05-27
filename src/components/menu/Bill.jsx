@@ -4,29 +4,14 @@ import { getTotalPrice } from "../../redux/slices/cartSlice";
 import {
   addOrder,
   addItemToOrder,
-  createOrderRazorpay,
   updateTable,
-  verifyPaymentRazorpay,
 } from "../../https/index";
 import { enqueueSnackbar } from "notistack";
 import { useMutation } from "@tanstack/react-query";
 import { removeAllItems } from "../../redux/slices/cartSlice";
 import { removeCustomer } from "../../redux/slices/customerSlice";
 import Invoice from "../invoice/Invoice";
-
-function loadScript(src) {
-  return new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => {
-      resolve(true);
-    };
-    script.onerror = () => {
-      resolve(false);
-    };
-    document.body.appendChild(script);
-  });
-}
+import qrCodeImg from "../../assets/images/qrcode.jpg";
 
 const Bill = () => {
   const dispatch = useDispatch();
@@ -41,117 +26,43 @@ const Bill = () => {
   const [paymentMethod, setPaymentMethod] = useState();
   const [showInvoice, setShowInvoice] = useState(false);
   const [orderInfo, setOrderInfo] = useState();
+  const [showQRModal, setShowQRModal] = useState(false);
 
-  const handlePlaceOrder = async () => {
+  const submitOrder = () => {
+    const orderData = {
+      customerDetails: {
+        name: customerData.customerName,
+        phone: customerData.customerPhone,
+        guests: customerData.guests,
+      },
+      orderStatus: "In Progress",
+      bills: {
+        total: total,
+        tax: tax,
+        totalWithTax: totalPriceWithTax,
+      },
+      items: cartData.map((item) => ({
+        _id: item.itemId || item._id || item.id,
+        quantity: item.quantity,
+      })),
+      table: Number(customerData.table),
+      paymentMethod: paymentMethod,
+    };
+    orderMutation.mutate(orderData);
+  };
+
+  const handlePlaceOrder = () => {
     if (!paymentMethod) {
       enqueueSnackbar("Please select a payment method!", {
         variant: "warning",
       });
-
       return;
     }
 
     if (paymentMethod === "Online") {
-      // load the script
-      try {
-        const res = await loadScript(
-          "https://checkout.razorpay.com/v1/checkout.js"
-        );
-
-        if (!res) {
-          enqueueSnackbar("Razorpay SDK failed to load. Are you online?", {
-            variant: "warning",
-          });
-          return;
-        }
-
-        // create order
-
-        const reqData = {
-          amount: totalPriceWithTax.toFixed(2),
-        };
-
-        const { data } = await createOrderRazorpay(reqData);
-
-        const options = {
-          key: `${import.meta.env.VITE_RAZORPAY_KEY_ID}`,
-          amount: data.order.amount,
-          currency: data.order.currency,
-          name: "RESTRO",
-          description: "Secure Payment for Your Meal",
-          order_id: data.order.id,
-          handler: async function (response) {
-            const verification = await verifyPaymentRazorpay(response);
-            console.log(verification);
-            enqueueSnackbar(verification.data.message, { variant: "success" });
-
-            // Place the order
-            const orderData = {
-              customerDetails: {
-                name: customerData.customerName,
-                phone: customerData.customerPhone,
-                guests: customerData.guests,
-              },
-              orderStatus: "In Progress",
-              bills: {
-                total: total,
-                tax: tax,
-                totalWithTax: totalPriceWithTax,
-              },
-              items: cartData.map((item) => ({
-                _id: item.itemId || item._id || item.id,
-                quantity: item.quantity,
-              })),
-              table: Number(customerData.table),
-              paymentMethod: paymentMethod,
-              paymentData: {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-              },
-            };
-
-            setTimeout(() => {
-              orderMutation.mutate(orderData);
-            }, 1500);
-          },
-          prefill: {
-            name: customerData.name,
-            email: "",
-            contact: customerData.phone,
-          },
-          theme: { color: "#025cca" },
-        };
-
-        const rzp = new window.Razorpay(options);
-        rzp.open();
-      } catch (error) {
-        console.log(error);
-        enqueueSnackbar("Payment Failed!", {
-          variant: "error",
-        });
-      }
+      setShowQRModal(true);
     } else {
-      // Place the order
-      const orderData = {
-        customerDetails: {
-          name: customerData.customerName,
-          phone: customerData.customerPhone,
-          guests: customerData.guests,
-        },
-        orderStatus: "In Progress",
-        bills: {
-          total: total,
-          tax: tax,
-          totalWithTax: totalPriceWithTax,
-        },
-        items: cartData.map((item) => ({
-          _id: item.itemId || item._id || item.id,
-          quantity: item.quantity,
-        })),
-        table: Number(customerData.table),
-        paymentMethod: paymentMethod,
-      };
-      orderMutation.mutate(orderData);
+      submitOrder();
     }
   };
 
@@ -284,6 +195,34 @@ const Bill = () => {
           currentItems={cartData}
           setShowInvoice={setShowInvoice}
         />
+      )}
+
+      {showQRModal && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-[#1a1a1a] p-6 rounded-2xl border border-[#333] flex flex-col items-center max-w-sm w-full mx-4">
+            <h2 className="text-white text-xl font-bold mb-4">Scan QR Code to Pay</h2>
+            <div className="bg-white p-2 rounded-xl mb-6">
+              <img src={qrCodeImg} alt="QR Code" className="w-48 h-48 object-cover" />
+            </div>
+            <div className="flex gap-4 w-full">
+              <button
+                onClick={() => setShowQRModal(false)}
+                className="flex-1 bg-[#333] hover:bg-[#444] text-white py-3 rounded-lg font-semibold transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowQRModal(false);
+                  submitOrder();
+                }}
+                className="flex-1 bg-[#02ca3a] hover:bg-[#02b333] text-white py-3 rounded-lg font-semibold transition"
+              >
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );
