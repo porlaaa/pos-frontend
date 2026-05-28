@@ -462,8 +462,7 @@ const Bill = () => {
               : ""
           }`}
         >
-
-          Online
+          QR Code
 
         </button>
       </div>

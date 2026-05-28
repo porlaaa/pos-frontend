@@ -381,8 +381,7 @@ const RecentOrders = () => {
                   </td>
 
                   <td className="p-4">
-                    {order.paymentMethod ||
-                      "Cash"}
+                    {order.paymentMethod === "Online" ? "QR Code" : (order.paymentMethod || "Cash")}
                   </td>
 
                 </tr>
