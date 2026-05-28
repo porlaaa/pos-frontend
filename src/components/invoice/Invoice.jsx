@@ -5,9 +5,12 @@ import { FaCheck } from "react-icons/fa6";
 const Invoice = ({
   orderInfo = {},
   currentItems = [],
-  setShowInvoice
+  setShowInvoice,
+  selectedPaymentMethod
 }) => {
   const invoiceRef = useRef(null);
+  
+  const finalPaymentMethod = selectedPaymentMethod || orderInfo?.paymentMethod;
 
   // ✅ safe data
   const customer = orderInfo?.customerDetails || {};
@@ -147,10 +150,10 @@ const Invoice = ({
           <div className="mt-2 text-xs">
             <p>
               <strong>Payment Method:</strong>{" "}
-              {orderInfo?.paymentMethod === "Online" ? "QR Code" : (orderInfo?.paymentMethod || "-")}
+              {finalPaymentMethod === "Online" ? "QR Code" : (finalPaymentMethod || "-")}
             </p>
 
-            {orderInfo?.paymentMethod !== "Cash" && orderInfo?.paymentData?.razorpay_order_id && (
+            {finalPaymentMethod !== "Cash" && orderInfo?.paymentData?.razorpay_order_id && (
               <>
                 <p>
                   <strong>Order ID:</strong>{" "}

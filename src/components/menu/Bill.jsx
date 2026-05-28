@@ -224,6 +224,7 @@ const Bill = () => {
           orderInfo={orderInfo}
           currentItems={cartData}
           setShowInvoice={setShowInvoice}
+          selectedPaymentMethod={paymentMethod}
         />
       )}
 
