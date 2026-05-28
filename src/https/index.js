@@ -61,3 +61,20 @@ export const addItemToOrder = (orderId, data) => {
   const id = typeof orderId === 'object' ? orderId._id : orderId;
   return axiosWrapper.put(`/api/order/${id}/add-item`, data);
 }; 
+
+// ✅ UPDATE PAYMENT METHOD
+export const updatePaymentMethod = (
+  orderId,
+  data
+) => {
+
+  const id =
+    typeof orderId === "object"
+      ? orderId._id
+      : orderId;
+
+  return axiosWrapper.patch(
+    `/api/order/${id}/payment`,
+    data
+  );
+};
