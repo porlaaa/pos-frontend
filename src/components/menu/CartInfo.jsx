@@ -26,9 +26,9 @@ const CartInfo = () => {
   return (
     <div className="px-4 py-2">
       <h1 className="text-lg text-[#e4e4e4] font-semibold tracking-wide">Order Details</h1>
-      <div className="mt-4 overflow-y-scroll scrollbar-hide h-[380px]" ref={scrolLRef}>
+      <div className="mt-4 overflow-y-scroll scrollbar-hide h-[300px]" ref={scrolLRef}>
         {cartData.length === 0 ? (
-          <p className="text-[#ababab] text-sm flex justify-center items-center h-[380px]">Your cart is empty.</p>
+          <p className="text-[#ababab] text-sm flex justify-center items-center h-[300px]">Your cart is empty.</p>
         ) : (
           cartData.map((item, index) => (
             <div key={item.itemId || index} className="bg-[#1f1f1f] rounded-lg px-4 py-4 mb-2">
@@ -42,7 +42,7 @@ const CartInfo = () => {
                   className="text-[#ababab] cursor-pointer hover:text-red-500" 
                   size={20} 
                 />
-                <p className="text-[#f5f5f5] text-md font-bold">{item.price} ฿</p>
+                <p className="text-[#f5f5f5] text-md font-bold">{(item.price * item.quantity).toFixed(2)} ฿</p>
               </div>
             </div>
           ))

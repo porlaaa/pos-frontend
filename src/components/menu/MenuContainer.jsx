@@ -49,12 +49,10 @@ const MenuContainer = () => {
 
     const { name, price } = item;
     const newObj = {
-      id: Date.now(),
-      name,
-      pricePerQuantity: price,
-      quantity: itemCount,
-      price: price * itemCount,
       itemId: item._id,
+      name,
+      price: price,
+      quantity: itemCount,
     };
 
     dispatch(addItems(newObj));
