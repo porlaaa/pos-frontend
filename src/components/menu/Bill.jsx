@@ -51,6 +51,28 @@ const Bill = () => {
     orderMutation.mutate(orderData);
   };
 
+  const handleSaveOrder = () => {
+    const orderData = {
+      customerDetails: {
+        name: customerData.customerName,
+        phone: customerData.customerPhone,
+        guests: customerData.guests,
+      },
+      orderStatus: "In Progress",
+      bills: {
+        total: total,
+        tax: tax,
+        totalWithTax: totalPriceWithTax,
+      },
+      items: cartData.map((item) => ({
+        _id: item.itemId || item._id || item.id,
+        quantity: item.quantity,
+      })),
+      table: Number(customerData.table),
+    };
+    orderMutation.mutate(orderData);
+  };
+
   const handlePlaceOrder = () => {
     if (!paymentMethod) {
       enqueueSnackbar("Please select a payment method!", {
@@ -177,15 +199,23 @@ const Bill = () => {
         </button>
       </div>
 
-      <div className="flex items-center gap-3 px-5 mt-4">
-        <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg">
-          Print Receipt
-        </button>
+      <div className="flex flex-col gap-3 px-5 mt-4">
+        <div className="flex items-center gap-3 w-full">
+          <button className="bg-[#025cca] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg">
+            Print Receipt
+          </button>
+          <button
+            onClick={handleSaveOrder}
+            className="bg-[#f6b100] px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
+          >
+            Place Order
+          </button>
+        </div>
         <button
           onClick={handlePlaceOrder}
-          className="bg-[#f6b100] px-4 py-3 w-full rounded-lg text-[#1f1f1f] font-semibold text-lg"
+          className="bg-[#02ca3a] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg hover:bg-[#02b333] transition"
         >
-          Place Order
+          Checkout
         </button>
       </div>
 

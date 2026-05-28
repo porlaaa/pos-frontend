@@ -100,29 +100,25 @@ const Invoice = ({
 
             <ul className="text-sm text-gray-700">
 
-              {(items || []).map((item, index) => {
-
+              {(items || []).map((cartItem, index) => {
+                const itemData = cartItem?.item || cartItem;
                 const total =
-                  item?.total ||
-                  (item?.price || 0) *
-                  (item?.quantity || 0);
+                  cartItem?.total ||
+                  (itemData?.price || 0) *
+                  (cartItem?.quantity || 0);
 
                 return (
-
                   <li
                     key={index}
                     className="flex justify-between text-xs"
                   >
-
                     <span>
-                      {item?.name || "Item"} x
-                      {item?.quantity || 0}
+                      {itemData?.name || "Item"} x
+                      {cartItem?.quantity || 0}
                     </span>
-
                     <span>
                       {total.toFixed(2)} ฿
                     </span>
-
                   </li>
                 );
               })}
@@ -151,10 +147,10 @@ const Invoice = ({
           <div className="mt-2 text-xs">
             <p>
               <strong>Payment Method:</strong>{" "}
-              {orderInfo?.paymentMethod || "-"}
+              {orderInfo?.paymentMethod === "Online" ? "QR Code" : (orderInfo?.paymentMethod || "-")}
             </p>
 
-            {orderInfo?.paymentMethod !== "Cash" && (
+            {orderInfo?.paymentMethod !== "Cash" && orderInfo?.paymentData?.razorpay_order_id && (
               <>
                 <p>
                   <strong>Order ID:</strong>{" "}

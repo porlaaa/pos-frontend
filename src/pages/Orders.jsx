@@ -3,11 +3,13 @@ import OrderCard from "../components/orders/OrderCard";
 import BackButton from "../components/shared/BackButton";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getOrders } from "../https/index";
-import { enqueueSnackbar } from "notistack"
+import { enqueueSnackbar } from "notistack";
+import Invoice from "../components/invoice/Invoice";
 
 const Orders = () => {
 
   const [status, setStatus] = useState("all");
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     document.title = "POS | Orders"
@@ -65,11 +67,22 @@ const Orders = () => {
         {
           filteredOrders.length > 0 ? (
             filteredOrders.map((order) => {
-              return <OrderCard key={order._id} order={order} />
+              return (
+                <div key={order._id} onClick={() => setSelectedOrder(order)} className="cursor-pointer hover:opacity-90 transition-opacity">
+                  <OrderCard order={order} />
+                </div>
+              )
             })
           ) : <p className="col-span-3 text-gray-500">No orders available</p>
         }
       </div>
+
+      {selectedOrder && (
+        <Invoice 
+          orderInfo={selectedOrder} 
+          setShowInvoice={() => setSelectedOrder(null)} 
+        />
+      )}
     </section>
   );
 };
