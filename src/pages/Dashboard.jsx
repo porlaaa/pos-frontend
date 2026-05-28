@@ -22,7 +22,6 @@ const buttons = [
 const tabs = [
   "Sales Revenue",
   "Orders",
-  "Payments",
 ];
 
 const Dashboard = () => {
@@ -139,23 +138,6 @@ const Dashboard = () => {
         {activeTab ===
           "Orders" && (
           <RecentOrders />
-        )}
-
-        {activeTab ===
-          "Payments" && (
-
-          <div className="bg-[#262626] p-8 rounded-2xl border border-[#333]">
-
-            <h1 className="text-2xl font-bold">
-              Payments
-            </h1>
-
-            <p className="text-gray-400 mt-2">
-              Coming Soon...
-            </p>
-
-          </div>
-
         )}
 
       </div>

@@ -215,7 +215,7 @@ const Bill = () => {
           onClick={handlePlaceOrder}
           className="bg-[#02ca3a] px-4 py-3 w-full rounded-lg text-[#f5f5f5] font-semibold text-lg hover:bg-[#02b333] transition"
         >
-          Checkout
+          Check Bill
         </button>
       </div>
 
