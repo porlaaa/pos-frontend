@@ -243,30 +243,21 @@ const Invoice = ({
 
                     <li
                       key={index}
-
-                      className="flex justify-between text-xs"
+                      className="flex flex-col mb-2 text-xs"
                     >
-
-                      <span>
-
-                        {
-                          itemData?.name ||
-                          "Item"
-                        }
-
-                        {" "}x
-
-                        {
-                          cartItem?.quantity || 0
-                        }
-
-                      </span>
-
-                      <span>
-
-                        {total.toFixed(2)} ฿
-
-                      </span>
+                      <div className="flex justify-between">
+                        <span>
+                          {itemData?.name || "Item"} x{cartItem?.quantity || 0}
+                        </span>
+                        <span>
+                          {total.toFixed(2)} ฿
+                        </span>
+                      </div>
+                      {cartItem?.note && (
+                        <span className="text-gray-500 italic text-[10px]">
+                          * {cartItem.note}
+                        </span>
+                      )}
                     </li>
                   );
                 }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { RiDeleteBin2Fill } from "react-icons/ri";
 import { FaNotesMedical } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import { removeItem, setItems } from "../../redux/slices/cartSlice";
+import { removeItem, setItems, updateNote } from "../../redux/slices/cartSlice";
 import { useSearchParams } from "react-router-dom";
 import { getOrderByTableId } from "../../https/index";
 
@@ -43,6 +43,15 @@ const CartInfo = () => {
                   size={20} 
                 />
                 <p className="text-[#f5f5f5] text-md font-bold">{(item.price * item.quantity).toFixed(2)} ฿</p>
+              </div>
+              <div className="mt-3">
+                <input
+                  type="text"
+                  placeholder="Additional request (e.g., no spicy)"
+                  value={item.note || ""}
+                  onChange={(e) => dispatch(updateNote({ itemId: item.itemId, note: e.target.value }))}
+                  className="w-full bg-[#2a2a2a] text-[#ababab] text-sm px-3 py-2 rounded-md outline-none focus:ring-1 focus:ring-[#f6b100] border border-[#333]"
+                />
               </div>
             </div>
           ))

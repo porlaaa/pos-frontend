@@ -104,6 +104,8 @@ const Bill = () => {
 
           quantity:
             item.quantity,
+            
+          note: item.note,
         })
       ),
 
