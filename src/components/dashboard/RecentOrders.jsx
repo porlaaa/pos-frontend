@@ -56,7 +56,7 @@ const RecentOrders = () => {
     // ✅ clear table
     if (
       orderStatus ===
-        "Completed" &&
+      "Completed" &&
       tableId
     ) {
 
@@ -130,9 +130,9 @@ const RecentOrders = () => {
         );
       },
 
-      onError: () => {
-
+      onError: (error) => {
         enqueueSnackbar(
+          error?.response?.data?.message ||
           "Failed to update order status!",
           {
             variant:
@@ -194,9 +194,9 @@ const RecentOrders = () => {
 
     if (
       prevOrderCount.current !==
-        0 &&
+      0 &&
       orders.length >
-        prevOrderCount.current
+      prevOrderCount.current
     ) {
 
       enqueueSnackbar(
@@ -304,15 +304,14 @@ const RecentOrders = () => {
                   <td className="p-4">
 
                     <select
-                      className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${
-                        order.orderStatus ===
-                        "Ready"
+                      className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${order.orderStatus ===
+                          "Ready"
                           ? "text-green-500"
                           : order.orderStatus ===
                             "Completed"
-                          ? "text-blue-500"
-                          : "text-yellow-500"
-                      }`}
+                            ? "text-blue-500"
+                            : "text-yellow-500"
+                        }`}
                       value={
                         order.orderStatus
                       }
@@ -381,9 +380,24 @@ const RecentOrders = () => {
                   </td>
 
                   <td className="p-4">
-                    {order.paymentMethod === "Online" ? "QR Code" : (order.paymentMethod || "Cash")}
+                    {!order.paymentMethod
+                      ? (
+                        <span className="text-red-500">
+                          Pending
+                        </span>
+                      )
+                      : order.paymentMethod === "Online"
+                        ? (
+                          <span className="text-green-500">
+                            QR Code
+                          </span>
+                        )
+                        : (
+                          <span className="text-green-500">
+                            Cash
+                          </span>
+                        )}
                   </td>
-
                 </tr>
               )
             )}
