@@ -47,15 +47,17 @@ const MenuContainer = () => {
   const handleAddToCart = (item) => {
     if (itemCount === 0) return;
 
-    const { name, price } = item;
-    const newObj = {
-      itemId: item._id,
-      name,
-      price: price,
-      quantity: itemCount,
-    };
+    for (let i = 0; i < itemCount; i++) {
+      dispatch(
+        addItems({
+          itemId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity: 1,
+        })
+      );
+    }
 
-    dispatch(addItems(newObj));
     setItemCount(0);
   };
 
@@ -110,7 +112,7 @@ const MenuContainer = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-4 sm:px-10 py-4 w-full">
         {categoryItems.length === 0 && (
-           <p className="text-[#ababab] px-4">No items found for this category.</p>
+          <p className="text-[#ababab] px-4">No items found for this category.</p>
         )}
         {categoryItems.map((item) => {
           return (
