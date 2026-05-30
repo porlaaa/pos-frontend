@@ -93,6 +93,39 @@ const Invoice = ({
     }, 500);
   };
 
+  const groupedItems = [];
+
+  items.forEach((item) => {
+
+    const note = item.note?.trim() || "";
+
+    // มี note → ไม่รวม
+    if (note) {
+
+      groupedItems.push(item);
+      return;
+    }
+
+    // ไม่มี note → รวม
+    const existing = groupedItems.find(
+      (x) =>
+        x.name === item.name &&
+        !(x.note?.trim())
+    );
+
+    if (existing) {
+
+      existing.quantity += item.quantity;
+      existing.total += item.total;
+
+    } else {
+
+      groupedItems.push({
+        ...item,
+      });
+    }
+  });
+
   return (
 
     <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
@@ -218,7 +251,7 @@ const Invoice = ({
 
             <ul className="text-sm text-gray-700">
 
-              {(items || []).map(
+              {groupedItems.map(
                 (
                   cartItem,
                   index
@@ -322,7 +355,7 @@ const Invoice = ({
 
               {
                 orderInfo?.paymentMethod ===
-                "Online"
+                  "Online"
 
                   ? "QR Code"
 
