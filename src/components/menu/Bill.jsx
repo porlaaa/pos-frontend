@@ -104,7 +104,7 @@ const Bill = () => {
 
           quantity:
             item.quantity,
-            
+
           note: item.note,
         })
       ),
@@ -124,6 +124,18 @@ const Bill = () => {
   // =====================================================
 
   const handleSaveOrder = () => {
+
+    if (!cartData.length) {
+
+      enqueueSnackbar(
+        "กรุณาเพิ่มรายการอาหารก่อน",
+        {
+          variant: "warning",
+        }
+      );
+
+      return;
+    }
 
     submitOrder();
   };
@@ -436,13 +448,12 @@ const Bill = () => {
             )
           }
 
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod ===
-            "Cash"
+          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${paymentMethod ===
+              "Cash"
 
               ? "bg-[#383737]"
               : ""
-          }`}
+            }`}
         >
 
           Cash
@@ -456,13 +467,12 @@ const Bill = () => {
             )
           }
 
-          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${
-            paymentMethod ===
-            "Online"
+          className={`bg-[#1f1f1f] px-4 py-3 w-full rounded-lg text-[#ababab] font-semibold ${paymentMethod ===
+              "Online"
 
               ? "bg-[#383737]"
               : ""
-          }`}
+            }`}
         >
           QR Code
 
