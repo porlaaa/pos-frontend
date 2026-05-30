@@ -51,34 +51,8 @@ const RecentOrders = () => {
     orderStatusUpdateMutation.mutate({
       orderId,
       orderStatus,
+      tableId,
     });
-
-    // ✅ clear table
-    if (
-      orderStatus ===
-      "Completed" &&
-      tableId
-    ) {
-
-      tableUpdateMutation.mutate({
-        tableId,
-        status:
-          "available",
-
-        currentOrder:
-          null,
-      });
-
-      // ✅ clear redux
-      dispatch(
-        updateCustomerTable({
-          table: "",
-          orderId: "",
-          customerName:
-            "",
-        })
-      );
-    }
   };
 
   // ✅ update table
@@ -107,13 +81,17 @@ const RecentOrders = () => {
       mutationFn: ({
         orderId,
         orderStatus,
+        tableId,
       }) =>
         updateOrderStatus({
           orderId,
           orderStatus,
         }),
 
-      onSuccess: () => {
+      onSuccess: (
+        resData,
+        variables
+      ) => {
 
         enqueueSnackbar(
           "Order status updated successfully!",
@@ -123,6 +101,32 @@ const RecentOrders = () => {
           }
         );
 
+        if (
+          variables.orderStatus ===
+          "Completed" &&
+          variables.tableId
+        ) {
+
+          tableUpdateMutation.mutate({
+            tableId:
+              variables.tableId,
+
+            status:
+              "available",
+
+            currentOrder:
+              null,
+          });
+
+          dispatch(
+            updateCustomerTable({
+              table: "",
+              orderId: "",
+              customerName: "",
+            })
+          );
+        }
+
         queryClient.invalidateQueries(
           [
             "orders",
@@ -131,12 +135,9 @@ const RecentOrders = () => {
       },
 
       onError: (error) => {
-        enqueueSnackbar(
-          error?.response?.data?.message ||
-          "Failed to update order status!",
+        enqueueSnackbar(error?.response?.data?.message || "Failed to update order status!",
           {
-            variant:
-              "error",
+            variant: "error",
           }
         );
       },
@@ -305,12 +306,12 @@ const RecentOrders = () => {
 
                     <select
                       className={`bg-[#1a1a1a] border border-gray-500 p-2 rounded-lg ${order.orderStatus ===
-                          "Ready"
-                          ? "text-green-500"
-                          : order.orderStatus ===
-                            "Completed"
-                            ? "text-blue-500"
-                            : "text-yellow-500"
+                        "Ready"
+                        ? "text-green-500"
+                        : order.orderStatus ===
+                          "Completed"
+                          ? "text-blue-500"
+                          : "text-yellow-500"
                         }`}
                       value={
                         order.orderStatus
