@@ -332,10 +332,12 @@ const Sidebar = () => {
                 )
               }
 
-              className="bg-transparent flex-1 text-white focus:outline-none appearance-none"
+              className={`bg-transparent flex-1 focus:outline-none appearance-none ${
+                selectedTable === "" ? "text-gray-400" : "text-white"
+              }`}
             >
-              <option value="">
-                -- Select a table (or skip) --
+              <option value="" className="text-gray-400">
+                Select a table
               </option>
 
               {availableTables.map((t) => (
