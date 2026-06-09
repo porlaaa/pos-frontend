@@ -35,6 +35,11 @@ const Menu = () => {
   useEffect(() => {
     if (!tableId) return;
 
+    // ถ้ากดกลับมาโต๊ะเดิม ไม่ต้องล้างตะกร้า
+    if (String(customerData.table) === String(tableId)) {
+      return;
+    }
+
     console.log("Current Table ID:", tableId);
 
     // reset state เก่า
@@ -45,7 +50,7 @@ const Menu = () => {
     dispatch(updateTable({
       table: Number(tableId),
     }));
-  }, [tableId, dispatch]);
+  }, [tableId, dispatch, customerData.table]);
 
   return (
     <section className="bg-[#1f1f1f] h-full flex flex-col lg:flex-row gap-3">
