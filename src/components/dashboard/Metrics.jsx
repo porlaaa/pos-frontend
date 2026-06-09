@@ -252,46 +252,68 @@ const Metrics = () => {
 
       </div>
 
-      {/* REVENUE CHART */}
-      <div className="mt-6 bg-[#262626] p-6 rounded-2xl border border-[#333]">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-white text-xl font-bold">Revenue & Orders Overview</h2>
-          <div className="flex items-center gap-4 text-sm">
-            <div className="flex items-center gap-2">
+      {/* CHARTS */}
+      <div className="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-5">
+        {/* REVENUE CHART */}
+        <div className="bg-[#262626] p-6 rounded-2xl border border-[#333]">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-white text-xl font-bold">Revenue Overview</h2>
+            <div className="flex items-center gap-2 text-sm">
               <div className="w-3 h-3 rounded-full bg-[#02ca3a]"></div>
               <span className="text-gray-300">Revenue (฿)</span>
             </div>
-            <div className="flex items-center gap-2">
+          </div>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#02ca3a" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#02ca3a" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
+                <YAxis stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `${value} ฿`} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", borderRadius: "8px", color: "#fff" }}
+                  itemStyle={{ color: "#fff" }}
+                />
+                <Area type="monotone" dataKey="revenue" name="Revenue (฿)" stroke="#02ca3a" fillOpacity={1} fill="url(#colorRevenue)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* ORDERS CHART */}
+        <div className="bg-[#262626] p-6 rounded-2xl border border-[#333]">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-white text-xl font-bold">Orders Overview</h2>
+            <div className="flex items-center gap-2 text-sm">
               <div className="w-3 h-3 rounded-full bg-[#f6b100]"></div>
               <span className="text-gray-300">Orders</span>
             </div>
           </div>
-        </div>
-        <div className="h-[350px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-              <defs>
-                <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#02ca3a" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#02ca3a" stopOpacity={0}/>
-                </linearGradient>
-                <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#f6b100" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#f6b100" stopOpacity={0}/>
-                </linearGradient>
-              </defs>
-              <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
-              <YAxis yAxisId="left" stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `${value} ฿`} />
-              <YAxis yAxisId="right" orientation="right" stroke="#ababab" tick={{ fill: "#ababab" }} />
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
-              <Tooltip
-                contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", borderRadius: "8px", color: "#fff" }}
-                itemStyle={{ color: "#fff" }}
-              />
-              <Area yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (฿)" stroke="#02ca3a" fillOpacity={1} fill="url(#colorRevenue)" />
-              <Area yAxisId="right" type="monotone" dataKey="orders" name="Orders" stroke="#f6b100" fillOpacity={1} fill="url(#colorOrders)" />
-            </AreaChart>
-          </ResponsiveContainer>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f6b100" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#f6b100" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
+                <YAxis stroke="#ababab" tick={{ fill: "#ababab" }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", borderRadius: "8px", color: "#fff" }}
+                  itemStyle={{ color: "#fff" }}
+                />
+                <Area type="monotone" dataKey="orders" name="Orders" stroke="#f6b100" fillOpacity={1} fill="url(#colorOrders)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
 
