@@ -318,7 +318,7 @@ const Invoice = ({
             <p>
 
               <strong>
-                VAT:
+                VAT(7%):
               </strong>{" "}
 
               {
