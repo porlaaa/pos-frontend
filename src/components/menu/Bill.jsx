@@ -42,7 +42,7 @@ const Bill = () => {
     getTotalPrice
   );
 
-  const taxRate = 5.25;
+  const taxRate = 7;
 
   const tax =
     (total * taxRate) / 100;
@@ -411,7 +411,7 @@ const Bill = () => {
 
         <p className="text-xs text-[#ababab] font-medium mt-2">
 
-          Tax(5.25%)
+          VAT(7%)
 
         </p>
 
@@ -426,7 +426,7 @@ const Bill = () => {
 
         <p className="text-xs text-[#ababab] font-medium mt-2">
 
-          Total With Tax
+          Total With VAT
 
         </p>
 
