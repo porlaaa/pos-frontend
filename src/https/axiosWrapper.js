@@ -5,8 +5,12 @@ const defaultHeader = {
   Accept: "application/json",
 };
 
+const baseURL = import.meta.env.PROD
+  ? ""
+  : import.meta.env.VITE_BACKEND_URL;
+
 export const axiosWrapper = axios.create({
-  baseURL: import.meta.env.VITE_BACKEND_URL,
+  baseURL,
   withCredentials: true,
   headers: { ...defaultHeader },
 });
