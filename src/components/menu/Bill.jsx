@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 
-import { getTotalPrice } from "../../redux/slices/cartSlice";
+import { getTotalPrice, getTotalQuantity } from "../../redux/slices/cartSlice";
 
 import {
   addOrder,
@@ -25,6 +25,7 @@ import {
 import Invoice from "../invoice/Invoice";
 
 import qrCodeImg from "../../assets/images/qrcode.jpg";
+import { formatCurrency } from "../../utils";
 
 const Bill = () => {
 
@@ -41,6 +42,10 @@ const Bill = () => {
 
   const total = useSelector(
     getTotalPrice
+  );
+
+  const totalQuantity = useSelector(
+    getTotalQuantity
   );
 
   const taxRate = 7;
@@ -412,14 +417,14 @@ const Bill = () => {
         <p className="text-xs text-[#ababab] font-medium mt-2">
 
           Items(
-          {cartData.length}
+          {totalQuantity}
           )
 
         </p>
 
         <h1 className="text-[#f5f5f5] text-md font-bold">
 
-          {total.toFixed(2)} ฿
+          {formatCurrency(total)}
 
         </h1>
       </div>
@@ -434,7 +439,7 @@ const Bill = () => {
 
         <h1 className="text-[#f5f5f5] text-md font-bold">
 
-          {tax.toFixed(2)} ฿
+          {formatCurrency(tax)}
 
         </h1>
       </div>
@@ -449,7 +454,7 @@ const Bill = () => {
 
         <h1 className="text-[#f5f5f5] text-md font-bold">
 
-          {totalPriceWithTax.toFixed(2)} ฿
+          {formatCurrency(totalPriceWithTax)}
 
         </h1>
       </div>

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
 import { FaCheck } from "react-icons/fa6";
+import { formatCurrency } from "../../utils";
 
 const Invoice = ({
   orderInfo = {},
@@ -283,7 +284,7 @@ const Invoice = ({
                           {itemData?.name || "Item"} x{cartItem?.quantity || 0}
                         </span>
                         <span>
-                          {total.toFixed(2)} ฿
+                          {formatCurrency(total)}
                         </span>
                       </div>
                       {cartItem?.note && (
@@ -308,10 +309,7 @@ const Invoice = ({
                 Subtotal:
               </strong>{" "}
 
-              {
-                bills.total?.toFixed?.(2)
-                || "0.00"
-              } ฿
+              {formatCurrency(bills.total)}
 
             </p>
 
@@ -321,10 +319,7 @@ const Invoice = ({
                 VAT(7%):
               </strong>{" "}
 
-              {
-                bills.tax?.toFixed?.(2)
-                || "0.00"
-              } ฿
+              {formatCurrency(bills.tax)}
 
             </p>
 
@@ -334,11 +329,7 @@ const Invoice = ({
                 Grand Total:
               </strong>{" "}
 
-              {
-                bills.totalWithTax
-                  ?.toFixed?.(2)
-                || "0.00"
-              } ฿
+              {formatCurrency(bills.totalWithTax)}
 
             </p>
           </div>

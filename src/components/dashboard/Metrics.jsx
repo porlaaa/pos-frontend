@@ -4,7 +4,7 @@ import { getOrders, getMenus, getItems } from "../../https";
 import { FaMoneyBillWave, FaClipboardList, FaCheckCircle } from "react-icons/fa";
 import CategoryCard from "./CategoryCard";
 import ItemCard from "./ItemCard";
-import { filterOrdersByTime } from "../../utils";
+import { filterOrdersByTime, formatCurrency } from "../../utils";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const Metrics = () => {
@@ -158,7 +158,7 @@ const Metrics = () => {
               </p>
 
               <h1 className="text-4xl font-bold mt-2">
-                {totalRevenue.toLocaleString()} ฿
+                {formatCurrency(totalRevenue)}
               </h1>
 
             </div>
@@ -260,7 +260,7 @@ const Metrics = () => {
             <h2 className="text-white text-xl font-bold">Revenue Overview</h2>
             <div className="flex items-center gap-2 text-sm">
               <div className="w-3 h-3 rounded-full bg-[#02ca3a]"></div>
-              <span className="text-gray-300">Revenue (฿)</span>
+              <span className="text-gray-300">Revenue</span>
             </div>
           </div>
           <div className="h-[300px] w-full">
@@ -273,13 +273,13 @@ const Metrics = () => {
                   </linearGradient>
                 </defs>
                 <XAxis dataKey="date" stroke="#ababab" tick={{ fill: "#ababab" }} tickMargin={10} />
-                <YAxis stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => `${value} ฿`} />
+                <YAxis stroke="#ababab" tick={{ fill: "#ababab" }} tickFormatter={(value) => formatCurrency(value)} />
                 <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: "#1a1a1a", borderColor: "#333", borderRadius: "8px", color: "#fff" }}
                   itemStyle={{ color: "#fff" }}
                 />
-                <Area type="monotone" dataKey="revenue" name="Revenue (฿)" stroke="#02ca3a" fillOpacity={1} fill="url(#colorRevenue)" />
+                <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#02ca3a" fillOpacity={1} fill="url(#colorRevenue)" />
               </AreaChart>
             </ResponsiveContainer>
           </div>

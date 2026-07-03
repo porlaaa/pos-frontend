@@ -5,6 +5,7 @@ import {
   removeItem,
   updateNote,
 } from "../../redux/slices/cartSlice";
+import { formatCurrency } from "../../utils";
 
 const CartInfo = () => {
   const cartData = useSelector(
@@ -69,11 +70,7 @@ const CartInfo = () => {
                 />
 
                 <p className="text-[#f5f5f5] text-md font-bold">
-                  {(
-                    item.price *
-                    item.quantity
-                  ).toFixed(2)}{" "}
-                  ฿
+                  {formatCurrency(item.price * item.quantity)}
                 </p>
               </div>
 

@@ -4,7 +4,7 @@ import { deleteItem, updateItem } from "../../https";
 import { enqueueSnackbar } from "notistack";
 import { FaTrash, FaEdit, FaCheck, FaTimes } from "react-icons/fa";
 import { BiSolidDish } from "react-icons/bi";
-import { isValidImageUrl, normalizeImageUrl } from "../../utils";
+import { formatCurrency, isValidImageUrl, normalizeImageUrl } from "../../utils";
 
 const ItemCard = ({ item }) => {
   const queryClient = useQueryClient();
@@ -113,7 +113,7 @@ const ItemCard = ({ item }) => {
         ) : (
           <div className="flex-1">
             <h1 className="text-white font-semibold text-lg truncate">{item.name}</h1>
-            <p className="text-[#f6b100] font-bold">{item.price} ฿</p>
+            <p className="text-[#f6b100] font-bold">{formatCurrency(item.price)}</p>
           </div>
         )}
       </div>

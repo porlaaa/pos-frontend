@@ -9,7 +9,7 @@ import { enqueueSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
 import { getOrders, updateOrderStatus } from "../../https/index";
 import { updateTable as updateCustomerTable } from "../../redux/slices/customerSlice";
-import { formatDateAndTime } from "../../utils";
+import { formatCurrency, formatDateAndTime } from "../../utils";
 
 const RecentOrders = () => {
   const dispatch = useDispatch();
@@ -156,7 +156,7 @@ const RecentOrders = () => {
 
                 <td className="p-4">Table - {order.table || "-"}</td>
 
-                <td className="p-4">{order.bills?.total || 0} บาท</td>
+                <td className="p-4">{formatCurrency(order.bills?.totalWithTax ?? order.bills?.total ?? 0)}</td>
 
                 <td className="p-4">
                   {!order.paymentMethod ? (

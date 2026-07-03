@@ -1,3 +1,12 @@
+export const formatCurrency = (value) => {
+  const amount = Number(value) || 0;
+
+  return `THB ${amount.toLocaleString("th-TH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+};
+
 export const isValidImageUrl = (url) => {
   if (!url || typeof url !== "string") return false;
   const trimmed = url.trim();

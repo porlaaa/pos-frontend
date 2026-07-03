@@ -1,6 +1,6 @@
 import React from "react";
 import { FaCheckDouble, FaLongArrowAltRight, FaCircle } from "react-icons/fa";
-import { formatDateAndTime, getAvatarName } from "../../utils/index";
+import { formatCurrency, formatDateAndTime, getAvatarName } from "../../utils/index";
 
 const OrderCard = ({ order }) => {
   if (!order) return null;
@@ -85,7 +85,7 @@ const OrderCard = ({ order }) => {
       <div className="flex items-center justify-between mt-4">
         <h1 className="text-[#f5f5f5] text-lg font-semibold">Total</h1>
         <p className="text-[#f5f5f5] text-lg font-semibold">
-          {total.toFixed(2)} ฿
+          {formatCurrency(total)}
         </p>
       </div>
     </div>

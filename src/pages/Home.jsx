@@ -7,7 +7,7 @@ import RecentOrders from "../components/home/RecentOrders";
 import PopularDishes from "../components/home/PopularDishes";
 import { useQuery } from "@tanstack/react-query";
 import { getOrders } from "../https";
-import { filterOrdersByTime } from "../utils";
+import { filterOrdersByTime, formatCurrency } from "../utils";
 
 const Home = () => {
   const [startDate, setStartDate] = useState("");
@@ -103,7 +103,7 @@ const Home = () => {
           <MiniCard
             title="Total Earnings"
             icon={<BsCashCoin />}
-            number={totalEarnings.toLocaleString()}
+            number={formatCurrency(totalEarnings)}
             footerNum={`${percentChange}% ${compareLabel}`}
           />
 

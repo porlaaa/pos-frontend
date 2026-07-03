@@ -103,13 +103,19 @@ const Modal = ({ type, setModalType }) => {
       }
 
       categoryMutation.mutate({
-        name: categoryData.name,
+        name: categoryData.name.trim(),
         image,
       });
     }
 
     // DISH ( FIX ใหม่)
     if (type === "dishes") {
+      if (!dishData.name.trim() || !dishData.price || Number(dishData.price) <= 0) {
+        return enqueueSnackbar("Dish name and price are required", {
+          variant: "warning",
+        });
+      }
+
       if (!dishData.menuId) {
         return enqueueSnackbar("Select category first", {
           variant: "warning",
@@ -124,7 +130,7 @@ const Modal = ({ type, setModalType }) => {
       }
 
       dishMutation.mutate({
-        name: dishData.name,
+        name: dishData.name.trim(),
         price: Number(dishData.price),
         category: dishData.menuId,
         image,
