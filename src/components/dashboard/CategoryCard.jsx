@@ -26,7 +26,7 @@ const CategoryCard = ({ menu }) => {
     mutationFn: () => deleteMenu(menu._id),
     onSuccess: () => {
       enqueueSnackbar("Category deleted successfully", { variant: "success" });
-      queryClient.invalidateQueries(["menus"]);
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
     onError: () => {
       enqueueSnackbar("Delete failed", { variant: "error" });
@@ -38,7 +38,7 @@ const CategoryCard = ({ menu }) => {
     onSuccess: () => {
       enqueueSnackbar("Category updated successfully", { variant: "success" });
       setIsEditing(false);
-      queryClient.invalidateQueries(["menus"]);
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
     onError: () => {
       enqueueSnackbar("Update failed", { variant: "error" });

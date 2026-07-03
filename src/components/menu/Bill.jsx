@@ -13,7 +13,7 @@ import {
 
 import { enqueueSnackbar } from "notistack";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { removeAllItems } from "../../redux/slices/cartSlice";
 
@@ -29,6 +29,7 @@ import qrCodeImg from "../../assets/images/qrcode.jpg";
 const Bill = () => {
 
   const dispatch = useDispatch();
+  const queryClient = useQueryClient();
 
   const customerData = useSelector(
     (state) => state.customer
@@ -145,6 +146,19 @@ const Bill = () => {
   // =====================================================
 
   const handlePlaceOrder = () => {
+
+    if (!customerData.orderId) {
+
+      enqueueSnackbar(
+        "Please place an order before checking bill!",
+        {
+          variant:
+            "warning",
+        }
+      );
+
+      return;
+    }
 
     if (!paymentMethod) {
 
@@ -336,6 +350,9 @@ const Bill = () => {
                 "success",
             }
           );
+
+          queryClient.invalidateQueries({ queryKey: ["orders"] });
+          queryClient.invalidateQueries({ queryKey: ["tables"] });
 
           setShowInvoice(true);
         },

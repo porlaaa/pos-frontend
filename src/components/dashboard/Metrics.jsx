@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getOrders, getMenus, getItems, deleteMenu } from "../../https";
+import { useQuery } from "@tanstack/react-query";
+import { getOrders, getMenus, getItems } from "../../https";
 import { FaMoneyBillWave, FaClipboardList, FaCheckCircle } from "react-icons/fa";
 import CategoryCard from "./CategoryCard";
 import ItemCard from "./ItemCard";

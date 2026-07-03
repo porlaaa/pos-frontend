@@ -44,7 +44,7 @@ const Register = ({setIsRegister}) => {
     },
     onError: (error) => {
       const { response } = error;
-      const message = response.data.message;
+      const message = response?.data?.message || "Register failed";
       enqueueSnackbar(message, { variant: "error" });
     },
   });

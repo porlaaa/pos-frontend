@@ -21,6 +21,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getTables } from "../../https";
 
 import logo from "../../assets/images/logo.png";
+import { enqueueSnackbar } from "notistack";
 
 const Sidebar = () => {
 
@@ -91,33 +92,26 @@ const Sidebar = () => {
 
   const handleCreateOrder = () => {
 
+    if (!name.trim() || !phone.trim() || guestCount <= 0 || !selectedTable) {
+      enqueueSnackbar("Please enter customer details and select a table", {
+        variant: "warning",
+      });
+      return;
+    }
+
     dispatch(removeAllItems());
 
-    // เก็บ customer + table ใน redux
     dispatch(
       setCustomer({
-        name,
-        phone,
+        name: name.trim(),
+        phone: phone.trim(),
         guests: guestCount,
-
-        table: selectedTable
-          ? Number(selectedTable)
-          : "",
+        table: Number(selectedTable),
       })
     );
 
     setIsModalOpen(false);
-
-    // มีโต๊ะ → ไป menu
-    if (selectedTable) {
-
-      navigate("/menu");
-
-    } else {
-
-      // ไม่มีโต๊ะ → ไป tables
-      navigate("/tables");
-    }
+    navigate("/menu");
   };
 
   const navItems = [

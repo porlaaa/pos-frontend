@@ -50,7 +50,7 @@ const Modal = ({ type, setModalType }) => {
     onSuccess: (res) => {
       enqueueSnackbar(res.data.message, { variant: "success" });
       setModalType(null);
-      queryClient.invalidateQueries(["tables"]);
+      queryClient.invalidateQueries({ queryKey: ["tables"] });
     },
   });
 
@@ -60,7 +60,7 @@ const Modal = ({ type, setModalType }) => {
     onSuccess: () => {
       enqueueSnackbar("Category created!", { variant: "success" });
       setModalType(null);
-      queryClient.invalidateQueries(["menus"]);
+      queryClient.invalidateQueries({ queryKey: ["menus"] });
     },
   });
 
@@ -73,7 +73,7 @@ const Modal = ({ type, setModalType }) => {
       setModalType(null);
 
       // สำคัญ: refresh items
-      queryClient.invalidateQueries(["items"]);
+      queryClient.invalidateQueries({ queryKey: ["items"] });
     },
 
     onError: () => {

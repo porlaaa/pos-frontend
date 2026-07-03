@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { GrRadialSelected } from "react-icons/gr";
 import { FaShoppingCart } from "react-icons/fa";
 import { useDispatch } from "react-redux";
@@ -23,8 +23,8 @@ const MenuContainer = () => {
     queryFn: getItems,
   });
 
-  const menus = menuRes?.data?.data || [];
-  const items = itemRes?.data?.data || [];
+  const menus = useMemo(() => menuRes?.data?.data || [], [menuRes]);
+  const items = useMemo(() => itemRes?.data?.data || [], [itemRes]);
 
   useEffect(() => {
     if (menus.length > 0 && !selected) {
@@ -45,7 +45,7 @@ const MenuContainer = () => {
   };
 
   const handleAddToCart = (item) => {
-    if (itemCount === 0) return;
+    if (itemId !== item._id || itemCount === 0) return;
 
     for (let i = 0; i < itemCount; i++) {
       dispatch(

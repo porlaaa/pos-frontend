@@ -28,7 +28,7 @@ const ItemCard = ({ item }) => {
     mutationFn: () => deleteItem(item._id),
     onSuccess: () => {
       enqueueSnackbar("Deleted successfully", { variant: "success" });
-      queryClient.invalidateQueries(["items"]);
+      queryClient.invalidateQueries({ queryKey: ["items"] });
     },
     onError: () => {
       enqueueSnackbar("Delete failed", { variant: "error" });
@@ -40,7 +40,7 @@ const ItemCard = ({ item }) => {
     onSuccess: () => {
       enqueueSnackbar("Updated successfully", { variant: "success" });
       setIsEditing(false);
-      queryClient.invalidateQueries(["items"]);
+      queryClient.invalidateQueries({ queryKey: ["items"] });
     },
     onError: () => {
       enqueueSnackbar("Update failed", { variant: "error" });

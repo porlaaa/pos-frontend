@@ -89,9 +89,7 @@ const Tables = () => {
           }
         );
 
-        queryClient.invalidateQueries([
-          "tables",
-        ]);
+        queryClient.invalidateQueries({ queryKey: ["tables"] });
 
         setShowModal(false);
 
@@ -127,9 +125,7 @@ const Tables = () => {
           }
         );
 
-        queryClient.invalidateQueries([
-          "tables",
-        ]);
+        queryClient.invalidateQueries({ queryKey: ["tables"] });
       },
 
       onError: (error) => {
