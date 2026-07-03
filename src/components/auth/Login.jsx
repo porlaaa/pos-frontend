@@ -28,8 +28,6 @@ const Login = () => {
       mutationFn: (reqData) => login(reqData),
       onSuccess: (res) => {
           const { data } = res;
-          localStorage.setItem("accessToken", data.accessToken); // เพิ่มบรรทัดนี้
-          console.log("Token saved:", data.accessToken);
           const { _id, name, email, phone, role } = data.data;
           dispatch(setUser({ _id, name, email, phone, role }));
           navigate("/");

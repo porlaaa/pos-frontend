@@ -16,7 +16,6 @@ const Header = () => {
   const logoutMutation = useMutation({
     mutationFn: () => logout(),
     onSettled: () => {
-      localStorage.removeItem("accessToken");
       dispatch(removeUser());
       navigate("/auth");
     },
