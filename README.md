@@ -1,13 +1,18 @@
 # POS Frontend
 
-This is the React web client for the Web POS demo project. It connects to the POS backend API and provides the main restaurant POS experience for staff/admin users.
+This is the React web client for the Web POS demo project. It provides the main restaurant POS interface for staff and admin users.
 
-## Purpose
+## What It Is
 
-- Main web POS interface
-- Demo application for portfolio and job application presentation
-- Works with the shared Node/Express backend API
-- Has a companion Flutter mobile demo app in `pos-mobile`
+The frontend is the primary web experience of the POS system. It connects to the backend API to manage restaurant tables, menus, items, orders, and dashboard data.
+
+## How It Works
+
+1. A staff member signs in from the web app.
+2. The app keeps the authenticated session with the backend.
+3. API calls are kept in `src/https`.
+4. Pages use the API layer to load and update POS data.
+5. Updated table and order states are shown in the interface.
 
 ## Tech Stack
 
@@ -29,18 +34,6 @@ This is the React web client for the Web POS demo project. It connects to the PO
 - Order creation
 - Order status updates
 - Dashboard and sales overview
-
-## Default API
-
-For local development, create a local `.env` file:
-
-```env
-VITE_BACKEND_URL=http://localhost:5000
-```
-
-Do not commit `.env` or real secrets.
-
-In production builds, the app uses same-origin API paths. The Vercel rewrite config forwards `/api/*` requests to the deployed backend.
 
 ## Run
 
@@ -74,11 +67,6 @@ Run lint:
 npm run lint
 ```
 
-## Local URLs
-
-- Frontend: `http://localhost:5173`
-- Backend API: `http://localhost:5000`
-
 ## Note
 
-This repository is the main web client for the Web POS demo project. The Flutter mobile app is only a demo client that reuses the same backend API.
+This repository is the main web client for the Web POS demo project. Sensitive configuration and deployment values should be managed locally or through the hosting provider, not documented or committed to Git.
