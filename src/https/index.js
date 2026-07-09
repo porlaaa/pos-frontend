@@ -11,7 +11,7 @@ export const addTable = (data) => axiosWrapper.post("/api/table/", data);
 export const getTables = () => axiosWrapper.get("/api/table");
 export const deleteTable = (tableId) => axiosWrapper.delete(`/api/table/${tableId}`);
 
-// ✅ แก้ไข: ป้องกันปัญหา tableId หลุดไปเป็น Object [object Object]
+// Normalize table id before sending it to the API.
 export const updateTable = ({ tableId, ...tableData }) => {
   const id = typeof tableId === 'object' ? tableId._id : tableId;
   return axiosWrapper.put(`/api/table/${id}`, tableData);
@@ -44,25 +44,25 @@ export const verifyPaymentRazorpay = (data) =>
 export const addOrder = (data) => axiosWrapper.post("/api/order/", data);
 export const getOrders = () => axiosWrapper.get("/api/order");
 
-// ✅ แก้ไข: ป้องกันปัญหา orderId เป็น Object และรองรับการ Update สถานะ
+// Normalize order id before updating status.
 export const updateOrderStatus = ({ orderId, orderStatus }) => {
   const id = typeof orderId === 'object' ? orderId._id : orderId;
   return axiosWrapper.put(`/api/order/${id}`, { orderStatus });
 };
 
-// ✅ เพิ่มใหม่: สำหรับดึง Order จาก Table ID (ใช้แก้ปัญหา N/A ในหน้าโต๊ะ)
+// Fetch the active order for a table.
 export const getOrderByTableId = (tableId) => {
   const id = typeof tableId === 'object' ? tableId._id : tableId;
   return axiosWrapper.get(`/api/order/table/${id}`);
 };
 
-// ✅ เพิ่มใหม่: สำหรับเพิ่ม Item เข้าใน Order เดิม (ถ้าต้องการใช้ในหน้าจัดการ Order)
+// Add more items to an existing order.
 export const addItemToOrder = (orderId, data) => {
   const id = typeof orderId === 'object' ? orderId._id : orderId;
   return axiosWrapper.put(`/api/order/${id}/add-item`, data);
 }; 
 
-// ✅ UPDATE PAYMENT METHOD
+// UPDATE PAYMENT METHOD
 export const updatePaymentMethod = (
   orderId,
   data

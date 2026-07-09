@@ -7,7 +7,7 @@ const TableCard = ({ id, name, status, initials, seats }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    // ✅ ไม่ต้องสนสถานะ ได้ ID มาปุ๊บ พาเข้าหน้าเมนูทันที!
+    // Open the menu for the selected table.
     navigate(`/menu?tableId=${id}`);
   };
 

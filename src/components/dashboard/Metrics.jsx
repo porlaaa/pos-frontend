@@ -64,7 +64,7 @@ const Metrics = () => {
 
   const filteredOrders = filterOrdersByTime(orders, startDate, endDate);
 
-  // ===== 💰 TOTAL REVENUE =====
+  // ===== TOTAL REVENUE =====
   const totalRevenue =
     filteredOrders.reduce(
       (sum, order) =>
@@ -73,7 +73,7 @@ const Metrics = () => {
       0
     );
 
-  // ===== 🔄 ACTIVE ORDERS =====
+  // ===== ACTIVE ORDERS =====
   const activeOrders =
     filteredOrders.filter(
       (o) =>
@@ -82,7 +82,7 @@ const Metrics = () => {
         o.orderStatus === "Ready"
     ).length;
 
-  // ===== ✅ COMPLETED =====
+  // ===== COMPLETED =====
   const completedOrders =
     filteredOrders.filter(
       (o) =>
@@ -90,14 +90,14 @@ const Metrics = () => {
         "Completed"
     ).length;
 
-  // ===== 📊 OTHER =====
+  // ===== OTHER =====
   const totalCategories =
     menus.length;
 
   const totalDishes =
     items.length;
 
-  // ===== 📈 CHART DATA =====
+  // ===== CHART DATA =====
   const chartDataMap = {};
 
   filteredOrders.forEach((order) => {

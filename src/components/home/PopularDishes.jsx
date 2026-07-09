@@ -22,7 +22,7 @@ const PopularDishes = () => {
 
   const filteredOrders = filterOrdersByTime(orders, startDate, endDate);
 
-  // 🔥 count orders per item
+  // Count orders per item.
   const itemCountMap = {};
 
   filteredOrders.forEach(order => {
@@ -39,7 +39,7 @@ const PopularDishes = () => {
     });
   });
 
-  // 🔥 merge + sort
+  // Merge items with their order counts and sort them.
   const popular = items
     .map(item => ({
       ...item,

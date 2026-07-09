@@ -18,7 +18,6 @@ const OrderList = ({ order }) => {
   const itemCount =
     order?.items?.length || 0;
 
-  // FIX ตรงนี้
   const tableNo =
     order?.table || "-";
 

@@ -5,7 +5,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   addTable,
   createMenu,
-  createItem, // ใช้ตัวใหม่
+  createItem,
   getMenus,
 } from "../../https";
 import { enqueueSnackbar } from "notistack";
@@ -34,7 +34,7 @@ const Modal = ({ type, setModalType }) => {
     image: "",
   });
 
-  // โหลด categories
+  // Load categories.
   const { data } = useQuery({
     queryKey: ["menus"],
     queryFn: getMenus,
@@ -64,7 +64,7 @@ const Modal = ({ type, setModalType }) => {
     },
   });
 
-  // DISH ( FIX ใหม่)
+  // DISH
   const dishMutation = useMutation({
     mutationFn: createItem,
 
@@ -72,7 +72,7 @@ const Modal = ({ type, setModalType }) => {
       enqueueSnackbar("Dish added!", { variant: "success" });
       setModalType(null);
 
-      // สำคัญ: refresh items
+      // Refresh items after adding a dish.
       queryClient.invalidateQueries({ queryKey: ["items"] });
     },
 
@@ -108,7 +108,7 @@ const Modal = ({ type, setModalType }) => {
       });
     }
 
-    // DISH ( FIX ใหม่)
+    // DISH
     if (type === "dishes") {
       if (!dishData.name.trim() || !dishData.price || Number(dishData.price) <= 0) {
         return enqueueSnackbar("Dish name and price are required", {

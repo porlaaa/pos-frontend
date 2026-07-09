@@ -9,7 +9,7 @@ import Bill from "../components/menu/Bill";
 import { useSelector, useDispatch } from "react-redux";
 import { useSearchParams } from "react-router-dom";
 
-// import action ของ redux
+// Redux actions
 import {
   removeCustomer,
   updateTable,
@@ -20,33 +20,33 @@ import { removeAllItems } from "../redux/slices/cartSlice";
 const Menu = () => {
   const dispatch = useDispatch();
 
-  // รับ tableId จาก URL
+  // Read tableId from URL.
   const [searchParams] = useSearchParams();
   const tableId = searchParams.get("tableId");
 
   const customerData = useSelector((state) => state.customer);
 
-  // เปลี่ยน title
+  // Set page title.
   useEffect(() => {
     document.title = "POS | Menu";
   }, []);
 
-  // เปลี่ยนโต๊ะ
+  // Change active table.
   useEffect(() => {
     if (!tableId) return;
 
-    // ถ้ากดกลับมาโต๊ะเดิม ไม่ต้องล้างตะกร้า
+    // Keep the current cart when reopening the same table.
     if (String(customerData.table) === String(tableId)) {
       return;
     }
 
     console.log("Current Table ID:", tableId);
 
-    // reset state เก่า
+    // Reset old order state.
     dispatch(removeCustomer());
     dispatch(removeAllItems());
 
-    // set โต๊ะใหม่
+    // Set the new table.
     dispatch(updateTable({
       table: Number(tableId),
     }));

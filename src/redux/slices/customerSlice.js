@@ -14,23 +14,22 @@ const customerSlice = createSlice({
   initialState,
 
   reducers: {
-
     setCustomer: (state, action) => {
-
       const {
         name,
         phone,
+        customerName,
+        customerPhone,
         guests,
         table,
+        orderId,
       } = action.payload;
 
-      state.customerName = name;
-
-      state.customerPhone = phone;
-
-      state.guests = guests;
-
-      state.table = table;
+      state.orderId = orderId ?? "";
+      state.customerName = customerName ?? name ?? "";
+      state.customerPhone = customerPhone ?? phone ?? "";
+      state.guests = guests ?? 0;
+      state.table = table ?? "";
     },
 
     removeCustomer: (state) => {
@@ -47,27 +46,22 @@ const customerSlice = createSlice({
     },
 
     updateTable: (state, action) => {
+      const {
+        table,
+        orderId,
+        customerName,
+        customerPhone,
+        phone,
+        guests,
+      } = action.payload;
 
-      if (
-        action.payload.table !== undefined
-      ) {
-        state.table =
-          action.payload.table;
+      if (table !== undefined) state.table = table;
+      if (orderId !== undefined) state.orderId = orderId;
+      if (customerName !== undefined) state.customerName = customerName;
+      if (customerPhone !== undefined || phone !== undefined) {
+        state.customerPhone = customerPhone ?? phone;
       }
-
-      if (
-        action.payload.orderId !== undefined
-      ) {
-        state.orderId =
-          action.payload.orderId;
-      }
-
-      if (
-        action.payload.customerName !== undefined
-      ) {
-        state.customerName =
-          action.payload.customerName;
-      }
+      if (guests !== undefined) state.guests = guests;
     },
   },
 });

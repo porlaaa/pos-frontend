@@ -17,7 +17,7 @@ const CustomerInfo = () => {
     (state) => state.customer
   );
 
-  // อ่าน tableId จาก URL
+  // Read tableId from URL.
   const tableId =
     Number(searchParams.get("tableId"));
 

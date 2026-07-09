@@ -12,7 +12,7 @@ const Invoice = ({
   const invoiceRef = useRef(null);
 
   // =====================================================
-  // ✅ SAFE DATA
+  // SAFE DATA
   // =====================================================
 
   const customer =
@@ -27,7 +27,7 @@ const Invoice = ({
       : (currentItems || []);
 
   // =====================================================
-  // ✅ ORDER ID
+  // ORDER ID
   // =====================================================
 
   const orderId =
@@ -36,7 +36,7 @@ const Invoice = ({
       : "-";
 
   // =====================================================
-  // ✅ PRINT
+  // PRINT
   // =====================================================
 
   const handlePrint = () => {
@@ -100,14 +100,14 @@ const Invoice = ({
 
     const note = item.note?.trim() || "";
 
-    // มี note → ไม่รวม
+    // Keep noted items separate.
     if (note) {
 
       groupedItems.push(item);
       return;
     }
 
-    // ไม่มี note → รวม
+    // Merge items without notes.
     const existing = groupedItems.find(
       (x) =>
         x.name === item.name &&

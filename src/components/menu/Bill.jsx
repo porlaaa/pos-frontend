@@ -73,7 +73,7 @@ const Bill = () => {
     useState(false);
 
   // =====================================================
-  // ✅ CREATE ORDER
+  // CREATE ORDER
   // =====================================================
 
   const submitOrder = () => {
@@ -126,7 +126,7 @@ const Bill = () => {
   };
 
   // =====================================================
-  // ✅ PLACE ORDER
+  // PLACE ORDER
   // =====================================================
 
   const handleSaveOrder = () => {
@@ -134,7 +134,7 @@ const Bill = () => {
     if (!cartData.length) {
 
       enqueueSnackbar(
-        "กรุณาเพิ่มรายการอาหารก่อน",
+        "Please add at least one item before placing the order.",
         {
           variant: "warning",
         }
@@ -147,7 +147,7 @@ const Bill = () => {
   };
 
   // =====================================================
-  // ✅ CHECK BILL
+  // CHECK BILL
   // =====================================================
 
   const handlePlaceOrder = () => {
@@ -178,7 +178,7 @@ const Bill = () => {
       return;
     }
 
-    // ✅ ONLINE
+    // ONLINE
     if (
       paymentMethod ===
       "Online"
@@ -188,7 +188,7 @@ const Bill = () => {
 
     } else {
 
-      // ✅ CASH
+      // CASH
       paymentMutation.mutate({
         orderId:
           customerData.orderId,
@@ -200,7 +200,7 @@ const Bill = () => {
   };
 
   // =====================================================
-  // ✅ CREATE ORDER MUTATION
+  // CREATE ORDER MUTATION
   // =====================================================
 
   const orderMutation =
@@ -209,7 +209,7 @@ const Bill = () => {
       mutationFn:
         async (reqData) => {
 
-          // ✅ add item to existing order
+          // Add items to an existing order.
           if (
             customerData.orderId
           ) {
@@ -220,7 +220,7 @@ const Bill = () => {
             );
           }
 
-          // ✅ create new order
+          // Create a new order.
           return await addOrder(
             reqData
           );
@@ -236,7 +236,7 @@ const Bill = () => {
 
           setOrderInfo(data);
 
-          // ✅ SAVE ORDER ID
+          // Save the order id for the check bill flow.
           dispatch(
             setCustomer({
               ...customerData,
@@ -245,7 +245,7 @@ const Bill = () => {
             })
           );
 
-          // ✅ create new order
+          // Newly created order.
           if (
             !customerData.orderId
           ) {
@@ -280,7 +280,7 @@ const Bill = () => {
 
           } else {
 
-            // ✅ existing order
+            // Existing order.
             dispatch(
               removeAllItems()
             );
@@ -310,7 +310,7 @@ const Bill = () => {
     });
 
   // =====================================================
-  // ✅ UPDATE PAYMENT
+  // UPDATE PAYMENT
   // =====================================================
 
   const paymentMutation =
@@ -339,7 +339,7 @@ const Bill = () => {
 
           setOrderInfo(data);
 
-          // ✅ clear after payment
+          // Clear local order state after payment.
           dispatch(
             removeAllItems()
           );
@@ -377,7 +377,7 @@ const Bill = () => {
     });
 
   // =====================================================
-  // ✅ UPDATE TABLE
+  // UPDATE TABLE
   // =====================================================
 
   const tableUpdateMutation =

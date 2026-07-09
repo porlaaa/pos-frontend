@@ -58,7 +58,7 @@ const Sidebar = () => {
   const tables =
     tablesData?.data?.data || [];
 
-  // ใช้ booked ตัวเล็กให้ตรง backend
+  // Match the backend status value.
   const availableTables = tables.filter(
     (t) => t.status !== "Booked"
   );
